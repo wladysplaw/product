@@ -1,9 +1,25 @@
 ---
+import ProjectGrid from "../components/ProjectGrid.astro";
+import ServiceList from "../components/ServiceList.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+import SiteIdentity from "../components/SiteIdentity.astro";
+import { projects } from "../data/projects";
 import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
 <BaseLayout title="Product" description="Independent product design and digital experience portfolio.">
-  <main class="site-shell" id="main-content">
+  <main class="home site-shell" id="main-content">
     <h1 class="visually-hidden">Product</h1>
+    <header class="home__header">
+      <div class="home__intro">
+        <SiteIdentity />
+      </div>
+      <div class="home__right-column">
+        <ServiceList />
+        <a class="home__contact" href="https://t.me/saysskyy" target="_blank" rel="noreferrer">Let’s Talk</a>
+      </div>
+    </header>
+    <ProjectGrid projects={projects} />
   </main>
+  <SiteFooter />
 </BaseLayout>

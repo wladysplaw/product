@@ -1,0 +1,24 @@
+---
+import type { Project } from "../data/projects";
+import ProjectCard from "./ProjectCard.astro";
+
+interface Props {
+  projects: readonly Project[];
+}
+
+const { projects } = Astro.props;
+---
+
+<section class="project-grid" aria-label="Projects" data-testid="project-grid">
+  {
+    projects.length > 0 ? (
+      projects.map((project) => <ProjectCard project={project} />)
+    ) : (
+      <>
+        <p class="visually-hidden" role="status">No projects are published yet.</p>
+        <div class="project-grid__empty-surface" data-testid="empty-project-surface" aria-hidden="true"></div>
+        <div class="project-grid__empty-surface" data-testid="empty-project-surface" aria-hidden="true"></div>
+      </>
+    )
+  }
+</section>

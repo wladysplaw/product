@@ -1,0 +1,45 @@
+---
+import type { Project } from "../data/projects";
+import type { ProjectNeighbors } from "../lib/projects";
+import SiteFooter from "./SiteFooter.astro";
+
+interface Props {
+  project: Project;
+  neighbors: ProjectNeighbors;
+}
+
+const { project, neighbors } = Astro.props;
+const basePath = import.meta.env.BASE_URL;
+const nextHref = neighbors.next ? `${basePath}projects/${neighbors.next.slug}/` : null;
+---
+
+<main class="case-page site-shell" id="main-content">
+  <nav class="case-page__navigation" aria-label="Project navigation">
+    <a href={basePath}>Back</a>
+    {nextHref ? <a href={nextHref}>Next</a> : <span aria-hidden="true">Next</span>}
+  </nav>
+
+  <article class="case-page__body">
+    <header class="case-page__intro">
+      <h1>{project.title}</h1>
+      <p>{project.services}</p>
+      <p>{project.summary}</p>
+    </header>
+
+    <div class="case-page__blocks">
+      {
+        project.blocks.map((block) =>
+          block.type === "image" ? (
+            <figure class="case-page__media">
+              <img src={`${basePath}${block.src.slice(1)}`} alt={block.alt} />
+              {block.caption ? <figcaption>{block.caption}</figcaption> : null}
+            </figure>
+          ) : (
+            <p class="case-page__copy">{block.body}</p>
+          )
+        )
+      }
+    </div>
+  </article>
+</main>
+<SiteFooter />

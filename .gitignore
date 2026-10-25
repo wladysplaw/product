@@ -1,5 +1,7 @@
 node_modules/
 dist/
 .astro/
+.playwright-cli/
 playwright-report/
 test-results/
+output/playwright/

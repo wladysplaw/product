@@ -6,7 +6,7 @@
 
 **Architecture:** The static site owns all of its styles, components, routes, and project data in this repository. A typed `projects` module supplies home cards and static detail paths; it starts empty so a detail page is emitted only when the owner provides the first real project. CSS custom properties express the 1440 px desktop grid and collapse it at smaller viewports without hard-coding canvas coordinates.
 
-**Tech Stack:** Astro 7.4.1 or newer compatible patch release, TypeScript, CSS custom properties, Node 22 built-in test runner, Playwright Chromium, GitHub Actions / GitHub Pages.
+**Tech Stack:** Astro 7.4.1 or newer compatible patch release, TypeScript, CSS custom properties, Node 22 built-in test runner, Playwright CLI for visual verification, GitHub Actions / GitHub Pages.
 
 **Spec:** `docs/superpowers/specs/2026-10-25-product-site-design.md`
 
@@ -25,7 +25,7 @@
 
 - **Base-path deployment:** Verify built HTML uses `/product/` for assets and internal links, because a root-relative URL would work locally but fail on Pages.
 - **Empty catalogue:** Verify no static project route or invented card is emitted before real project data exists, because a placeholder could be mistaken for portfolio content.
-- **Desktop grid invariant:** Verify in a 1440 px browser that the services block's left edge equals the second grey surface's left edge and paired surfaces have equal height.
+- **Desktop grid invariant:** Verify in a 1440 px browser that the services block's left edge equals the second grey surface's left edge and paired surfaces have equal height; this is visual evidence, not a source-level test claim.
 - **Narrow viewport:** Verify a 390 px viewport has no horizontal overflow and retains readable source order, because desktop measures must not become clipped flex items.
 - **Motion and keyboard behavior:** Verify `Let’s Talk` is keyboard reachable and reduced-motion disables smooth scrolling, because visual polish cannot remove basic navigation behavior.
 
@@ -124,45 +124,43 @@ git commit -m "feat: add project content model"
 - Modify: `src/pages/index.astro`
 - Create: `src/pages/projects/[slug].astro`
 - Modify: `src/styles/global.css`
-- Create: `playwright.config.ts`
-- Modify: `package.json`
-- Test: `tests/layout.spec.ts`
+- Test: `tests/home-contract.test.mjs`
 
 **Interfaces:**
 - Consumes `projects`, the lookup helpers, and `BaseLayout`.
 - Produces a home page with an intentional empty catalogue state and a detail template that emits static pages only for `getProjectPaths(projects)`.
 - `ProjectCard` consumes a single `Project`; `ProjectDetail` consumes a `Project` plus optional neighbors.
 
-- [ ] **Step 1: Write browser-layout contract tests**
+- [ ] **Step 1: Write the built-home contract test**
 
-Create `playwright.config.ts` with an Astro preview web server at `http://127.0.0.1:4321/product/`, then create `tests/layout.spec.ts`. With stable `data-testid` hooks, assert at desktop that `services` and the second grey surface have equal left coordinates and the two empty surfaces have equal heights; at 390 px assert `document.documentElement.scrollWidth <= window.innerWidth`. Assert the Telegram CTA href exactly equals `https://t.me/saysskyy`.
+Create `tests/home-contract.test.mjs` that reads the built `dist/index.html`. It must assert the services landmark, exact Telegram CTA href, two empty grey-surface hooks, and a semantic main element exist. These prove deployable structure; the 1440 px and 390 px geometry is checked separately in a real browser.
 
-- [ ] **Step 2: Run the layout test to prove the routes/components are absent**
+- [ ] **Step 2: Run the built-home test to prove the composition is absent**
 
-Run: `npm run test:layout`
+Run: `npm test`
 
-Expected: FAIL because the built home and its required hooks do not exist.
+Expected: FAIL because the built home lacks the required landmarks, CTA, and grey-surface hooks.
 
 - [ ] **Step 3: Build the Figma-derived grid in semantic components**
 
-Add `@playwright/test` and the `test:layout` script. Use a shared two-column CSS grid with an 8 px gutter at the desktop reference. Put the intro in column one; put `ServiceList` at the start of column two, and place the contact CTA at the end of that same grid cell. `ProjectGrid` must use two `aria-hidden` empty grey surfaces, `aspect-ratio: 684 / 638` at the desktop layout, and no invented project facts. Cap the three editorial measures rather than using flex growth.
+Use a shared two-column CSS grid with an 8 px gutter at the desktop reference. Put the intro in column one; put `ServiceList` at the start of column two, and place the contact CTA at the end of that same grid cell. `ProjectGrid` must use two `aria-hidden` empty grey surfaces, `aspect-ratio: 684 / 638` at the desktop layout, and no invented project facts. Cap the three editorial measures rather than using flex growth.
 
 Implement the route template now, but `getStaticPaths` must return no paths while `projects` is empty. `back` is an actual link; `next` becomes a link only when `getProjectNeighbors` returns one.
 
 - [ ] **Step 4: Add responsive, accessible behavior and verify it**
 
-Collapse header and cards into a single column at the documented narrow breakpoint; preserve source order, visible focus, native smooth anchors, and reduced-motion fallback. Run: `npm install && npx playwright install chromium && npm run verify && npm run test:layout`.
+Collapse header and cards into a single column at the documented narrow breakpoint; preserve source order, visible focus, native smooth anchors, and reduced-motion fallback. Run: `npm run verify`.
 
-Expected: PASS for both viewport fixtures and the exact Telegram href.
+Expected: PASS for the built-home contract and the exact Telegram href.
 
 - [ ] **Step 5: Perform visual comparison without treating it as a test proof**
 
-Open the local home alongside the Figma screenshot at 1440 px. Check the 32 px outer margins, services/card shared boundary, grey-card pair geometry, editorial widths, and narrow layout. Record any visual mismatch separately from test status and correct in-scope CSS before proceeding.
+Use Playwright CLI to open the local home at 1440 px and 390 px alongside the Figma screenshot. Check the 32 px outer margins, services/card shared boundary, grey-card pair geometry, editorial widths, and narrow layout. Record any visual mismatch separately from test status and correct in-scope CSS before proceeding.
 
 - [ ] **Step 6: Commit the page system**
 
 ```bash
-git add src/components src/pages src/styles/global.css tests/layout.spec.ts playwright.config.ts package.json package-lock.json
+git add src/components src/pages src/styles/global.css tests/home-contract.test.mjs
 git commit -m "feat: add product site page skeleton"
 ```
 

@@ -45,6 +45,259 @@ a {
   border: 0;
 }
 
+.home {
+  padding-top: 28px;
+}
+
+.home__header {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--grid-gap);
+  min-height: 162px;
+}
+
+.home__intro {
+  max-width: var(--reading-measure);
+}
+
+.site-identity {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: clamp(1.5rem, 1.67vw, 2rem);
+  line-height: 1;
+}
+
+.site-identity__portrait {
+  position: relative;
+  display: block;
+  width: 22px;
+  height: 22px;
+  overflow: hidden;
+  border-radius: 50%;
+}
+
+.site-identity__portrait img {
+  position: absolute;
+  bottom: -9px;
+  left: -7px;
+  display: block;
+  width: 36px;
+  max-width: none;
+  height: 40px;
+}
+
+.home__right-column {
+  display: grid;
+  grid-template-columns: var(--service-measure) minmax(0, 1fr) var(--contact-measure);
+  align-items: start;
+}
+
+.service-list {
+  display: grid;
+  gap: 38px;
+  grid-column: 1;
+  max-width: var(--service-measure);
+}
+
+.service-list h2 {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+
+.home__contact {
+  grid-column: 3;
+  width: fit-content;
+  max-width: var(--contact-measure);
+  font-size: 0.75rem;
+  line-height: 1.333;
+  text-underline-offset: 0.2em;
+}
+
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--grid-gap);
+  margin-top: 420px;
+}
+
+.project-grid__empty-surface,
+.project-card {
+  display: block;
+  min-width: 0;
+  aspect-ratio: 684 / 638;
+  background: var(--color-surface);
+}
+
+.project-card {
+  position: relative;
+  padding: 48px;
+  overflow: hidden;
+  text-decoration: none;
+}
+
+.project-card__copy {
+  display: grid;
+  gap: 4px;
+  max-width: 18.375rem;
+}
+
+.project-card__title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.project-card__services {
+  color: var(--color-muted);
+  font-size: 1rem;
+  line-height: 1.25;
+}
+
+.project-card__media {
+  position: absolute;
+  right: 7.02%;
+  bottom: 8.94%;
+  left: 7.02%;
+  display: block;
+  width: 85.96%;
+  max-height: 50.63%;
+  object-fit: contain;
+}
+
+.site-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding-block: 120px 32px;
+}
+
+.site-footer a {
+  font-size: 1.25rem;
+  text-underline-offset: 0.2em;
+}
+
+.case-page {
+  padding-top: 28px;
+}
+
+.case-page__navigation {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1rem;
+}
+
+.case-page__navigation a {
+  text-underline-offset: 0.2em;
+}
+
+.case-page__body {
+  margin-top: 72px;
+}
+
+.case-page__intro,
+.case-page__copy {
+  max-width: 28.75rem;
+}
+
+.case-page__intro {
+  display: grid;
+  gap: 16px;
+}
+
+.case-page__intro h1,
+.case-page__intro p,
+.case-page__copy {
+  margin: 0;
+}
+
+.case-page__intro h1 {
+  font-family: var(--font-serif);
+  font-size: clamp(2.5rem, 4vw, 4rem);
+  font-weight: 400;
+  line-height: 1;
+}
+
+.case-page__blocks {
+  display: grid;
+  gap: 64px;
+  margin-top: 80px;
+}
+
+.case-page__media {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: clamp(24px, 6vw, 98px);
+  background: var(--color-surface);
+}
+
+.case-page__media img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.case-page__media figcaption {
+  color: var(--color-muted);
+}
+
+@media (max-width: 767px) {
+  .home {
+    padding-top: 16px;
+  }
+
+  .home__header,
+  .home__right-column,
+  .project-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .home__header {
+    gap: 48px;
+  }
+
+  .home__right-column {
+    gap: 40px;
+  }
+
+  .service-list,
+  .home__contact {
+    grid-column: 1;
+  }
+
+  .project-grid {
+    margin-top: 160px;
+  }
+
+  .project-grid__empty-surface,
+  .project-card {
+    aspect-ratio: 1 / 1;
+  }
+
+  .project-card {
+    padding: 24px;
+  }
+
+  .site-footer {
+    padding-block: 64px 24px;
+  }
+
+  .case-page__body {
+    margin-top: 56px;
+  }
+
+  .case-page__blocks {
+    gap: 32px;
+    margin-top: 56px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

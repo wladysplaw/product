@@ -1,0 +1,19 @@
+---
+import type { Project } from "../data/projects";
+
+interface Props {
+  project: Project;
+}
+
+const { project } = Astro.props;
+const projectHref = `${import.meta.env.BASE_URL}projects/${project.slug}/`;
+const coverSrc = `${import.meta.env.BASE_URL}${project.cover.src.slice(1)}`;
+---
+
+<a class="project-card" href={projectHref}>
+  <span class="project-card__copy">
+    <span class="project-card__title">{project.title}</span>
+    <span class="project-card__services">{project.services}</span>
+  </span>
+  <img class="project-card__media" src={coverSrc} alt={project.cover.alt} />
+</a>
