@@ -6,7 +6,7 @@
 
 **Architecture:** The static site owns all of its styles, components, routes, and project data in this repository. A typed `projects` module supplies home cards and static detail paths; it starts empty so a detail page is emitted only when the owner provides the first real project. CSS custom properties express the 1440 px desktop grid and collapse it at smaller viewports without hard-coding canvas coordinates.
 
-**Tech Stack:** Astro 5, TypeScript, CSS custom properties, Node 22 built-in test runner, Playwright Chromium, GitHub Actions / GitHub Pages.
+**Tech Stack:** Astro 7.4.1 or newer compatible patch release, TypeScript, CSS custom properties, Node 22 built-in test runner, Playwright Chromium, GitHub Actions / GitHub Pages.
 
 **Spec:** `docs/superpowers/specs/2026-10-25-product-site-design.md`
 

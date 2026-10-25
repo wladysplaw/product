@@ -1,0 +1,21 @@
+:root {
+  --color-page: #ffffff;
+  --color-ink: #1d1d1d;
+  --color-muted: #929292;
+  --color-surface: #f4f4f4;
+  --color-focus: #1d1d1d;
+  --font-sans: Arial, Helvetica, sans-serif;
+  --font-serif: Georgia, "Times New Roman", serif;
+  --page-margin: 16px;
+  --page-content-max: 1376px;
+  --grid-gap: 8px;
+  --reading-measure: 37.125rem;
+  --service-measure: 19.75rem;
+  --contact-measure: 16.0625rem;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --page-margin: 32px;
+  }
+}
