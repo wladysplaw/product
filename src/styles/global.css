@@ -255,6 +255,17 @@ a {
   color: var(--color-muted);
 }
 
+@media (min-width: 768px) and (max-width: 1217px) {
+  .home__right-column {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 40px;
+  }
+
+  .home__contact {
+    grid-column: 1;
+  }
+}
+
 @media (max-width: 767px) {
   .home {
     grid-template-columns: minmax(0, 1fr);

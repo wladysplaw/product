@@ -14,5 +14,25 @@ test("built home is safe to publish below /product/", () => {
 
   assert.equal(html.includes("localhost"), false, "built HTML must not point to a local server");
   assert.equal(html.includes("figma.com/api/mcp"), false, "built HTML must not point to Figma temporary assets");
-  assert.match(html, /(?:href|src)="\/product\/(?:_astro\/|[^\"]+)/, "assets or links must include /product/");
+
+  const resourceUrls = [...html.matchAll(/\b(?:href|src)="([^\"]+)"/g)].map((match) => match[1]);
+  const siteOrigin = "https://wladysplaw.github.io";
+
+  for (const resourceUrl of resourceUrls) {
+    if (resourceUrl.startsWith("/")) {
+      assert.ok(
+        resourceUrl.startsWith("/product/"),
+        `root-relative resource must stay below /product/: ${resourceUrl}`
+      );
+    }
+
+    if (resourceUrl.startsWith(siteOrigin)) {
+      assert.ok(
+        resourceUrl.startsWith(`${siteOrigin}/product/`),
+        `same-origin resource must stay below /product/: ${resourceUrl}`
+      );
+    }
+  }
+
+  assert.ok(resourceUrls.some((url) => url.startsWith("/product/")), "build must emit base-prefixed resources");
 });

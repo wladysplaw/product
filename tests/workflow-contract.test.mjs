@@ -32,7 +32,8 @@ test("Pages workflow builds the static site and deploys only its dist artifact",
   assert.match(workflow, /pages:\s*write/, "workflow must grant Pages deployment access");
   assert.match(workflow, /id-token:\s*write/, "workflow must grant the Pages identity token");
   assert.match(workflow, /npm ci/, "workflow must install from the lockfile");
-  assert.match(workflow, /npm run build/, "workflow must build the static artifact");
+  assert.match(buildJob, /run: npm run build/, "workflow must build the static artifact");
+  assert.match(buildJob, /run: npm test/, "workflow must validate the built artifact before upload");
   assert.match(workflow, /actions\/configure-pages@/, "workflow must configure Pages before building");
   assert.match(
     buildJob,
@@ -41,6 +42,11 @@ test("Pages workflow builds the static site and deploys only its dist artifact",
   );
   assert.match(deployJob, /^    needs:\s*build\s*$/m, "deployment must wait for the build artifact");
   assert.match(deployJob, /uses: actions\/deploy-pages@/, "workflow must deploy the uploaded artifact");
+  assert.ok(
+    buildJob.indexOf("run: npm run build") < buildJob.indexOf("run: npm test") &&
+      buildJob.indexOf("run: npm test") < buildJob.indexOf("uses: actions/upload-pages-artifact@"),
+    "workflow must test the built artifact before uploading it"
+  );
   assert.doesNotMatch(
     workflow,
     /actions-gh-pages|git\s+push|gh-pages\s+branch/i,
