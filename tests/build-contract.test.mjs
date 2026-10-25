@@ -87,6 +87,10 @@ test("base-path classification uses URL origins rather than string prefixes", ()
   assert.doesNotThrow(() => assertBaseScopedUrl("https://wladysplaw.github.io.evil/cover.png", documentUrl, "fixture.html"));
   assert.doesNotThrow(() => assertBaseScopedUrl("https://WLADYSPLAW.github.io/product/cover.png", documentUrl, "fixture.html"));
   assert.throws(
+    () => assertBaseScopedUrl("https://WLADYSPLAW.github.io/outside/cover.png", documentUrl, "fixture.html"),
+    /outside \/product\//
+  );
+  assert.throws(
     () => assertBaseScopedUrl("https://wladysplaw.github.io/outside/cover.png", documentUrl, "fixture.html"),
     /outside \/product\//
   );
