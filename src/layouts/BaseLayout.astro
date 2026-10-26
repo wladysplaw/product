@@ -58,5 +58,12 @@ const appleTouchIcon = `${basePath}apple-touch-icon.png`;
 
       startPageMotion();
     </script>
+    {import.meta.env.PROD && (
+      <script
+        type="module"
+        src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token":"02fee581531d4823bc152e79f0cbbb73"}'
+      ></script>
+    )}
   </body>
 </html>
