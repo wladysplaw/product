@@ -1265,6 +1265,26 @@ a[data-rising-ink].is-rising-ink-ready:hover {
   }
 }
 
+@media (max-width: 767px) and (prefers-reduced-motion: no-preference) {
+  html[data-page-motion-scroll-reveals="enhanced"][data-page-motion="entered"] [data-motion-reveal="case-continuation"][data-motion-revealed="true"] {
+    animation: editorial-scroll-reveal-mobile 920ms cubic-bezier(0.16, 1, 0.3, 1) var(--scroll-reveal-delay) both;
+  }
+
+  @keyframes editorial-scroll-reveal-mobile {
+    from {
+      filter: blur(7px);
+      opacity: 0;
+      transform: translate3d(0, 52px, 0);
+    }
+
+    to {
+      filter: blur(0);
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

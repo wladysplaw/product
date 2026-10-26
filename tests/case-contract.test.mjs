@@ -202,6 +202,21 @@ test("uses full-bleed mobile rasters without grey media surfaces", () => {
     /\.case-page__media img\s*\{[^}]*\bwidth:\s*100%;[^}]*\bmax-width:\s*none;[^}]*\bheight:\s*auto;[^}]*\bmax-height:\s*none;/,
     "mobile case rasters must fill the full-bleed media frame without an internal inset"
   );
+
+  assert.match(
+    mobileStyles,
+    /html\[data-page-motion-scroll-reveals="enhanced"\]\[data-page-motion="entered"\]\s+\[data-motion-reveal="case-continuation"\]\[data-motion-revealed="true"\]\s*\{\s*animation:\s*editorial-scroll-reveal-mobile\s+920ms/,
+    "mobile continuation reveals must use a dedicated animation so their parent never clips full-bleed rasters"
+  );
+
+  const mobileReveal = css.match(/@keyframes editorial-scroll-reveal-mobile\s*\{[\s\S]*?\n {2}\}/)?.[0] ?? "";
+
+  assert.notEqual(mobileReveal, "", "mobile continuation reveal keyframes must be present");
+  assert.doesNotMatch(
+    mobileReveal,
+    /clip-path/,
+    "mobile continuation reveal keyframes must leave horizontal full-bleed paint outside the text gutter"
+  );
 });
 
 test("keeps narrow case stories inside the page gutters", () => {
