@@ -115,7 +115,7 @@ test("keeps the Figma service and contact vertical measures", () => {
   assert.match(css, /\.service-list__creative\s*\{[^}]*\bgap:\s*16px;/, "the creative link must begin 16 px after the creative-coding copy");
   const mobileStyles = css.slice(css.indexOf("@media (max-width: 767px)"));
   assert.match(mobileStyles, /\.home__contact-links\s*\{[^}]*\bmargin-top:\s*0;/, "mobile direct links must begin without a removed-copy gap");
-  assert.match(mobileStyles, /\.service-list__creative\s*\{[^}]*\bgap:\s*16px;/, "the creative link must keep the 16 px copy gap on mobile");
+  assert.match(mobileStyles, /\.service-list__creative\s*\{[^}]*\bgap:\s*8px;/, "the creative link must use the shared compact mobile link rhythm");
   assert.match(css, /\.site-identity\s*\{[^}]*\bfont-weight:\s*350;/, "hero copy must use the owner-approved 350 weight");
   assert.match(css, /\.site-identity__portrait\s*\{[^}]*\bwidth:\s*28px;[^}]*\bheight:\s*28px;/, "the full source portrait must have the owner-approved larger square frame");
   assert.match(css, /\.site-identity__portrait\s*\{[^}]*\bvertical-align:\s*-0\.25em;/, "the larger portrait must remain vertically centered against the name");
@@ -145,8 +145,8 @@ test("mobile contact hides the invitation copy without adding a Let’s Talk lin
   assert.doesNotMatch(mobileStyles, /\.home__contact-talk/, "mobile styles must not reserve space for an extra Let’s Talk link");
   assert.match(mobileStyles, /\.home__contact-links\s*\{[^}]*\bmargin-top:\s*0;/, "email and Telegram must remain one compact mobile stack");
   assert.match(mobileStyles, /\.home__header\s*\{[^}]*\bpadding-top:\s*0;/, "mobile links must begin without a top offset");
-  assert.match(mobileStyles, /\.home__right-column\s*\{[^}]*\bgap:\s*16px;/, "explore must retain the same 16 px rhythm before the contact stack");
-  assert.match(mobileStyles, /\.home__contact-links\s*\{[^}]*\bgap:\s*16px;[^}]*\bmargin-top:\s*0;/, "email and Telegram must use the same 16 px mobile link rhythm as explore");
+  assert.match(mobileStyles, /\.home__right-column\s*\{[^}]*\bgap:\s*8px;/, "explore must retain the same compact rhythm before the contact stack");
+  assert.match(mobileStyles, /\.home__contact-links\s*\{[^}]*\bgap:\s*8px;[^}]*\bmargin-top:\s*0;/, "email and Telegram must use the same compact mobile link rhythm as explore");
 });
 
 test("keeps the contact column fixed while leaving twenty pixels empty on its right", () => {

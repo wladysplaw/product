@@ -1187,7 +1187,7 @@ a[data-rising-ink].is-rising-ink-ready:hover {
 
   .home__right-column {
     grid-template-columns: minmax(0, 1fr);
-    gap: 16px;
+    gap: 8px;
   }
 
   .service-list,
@@ -1196,7 +1196,7 @@ a[data-rising-ink].is-rising-ink-ready:hover {
   }
 
   .home__contact-links {
-    gap: 16px;
+    gap: 8px;
     margin-top: 0;
   }
 
@@ -1205,7 +1205,7 @@ a[data-rising-ink].is-rising-ink-ready:hover {
   }
 
   .service-list__creative {
-    gap: 16px;
+    gap: 8px;
   }
 
   .project-grid {
