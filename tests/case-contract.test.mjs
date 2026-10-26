@@ -188,6 +188,22 @@ test("keeps the compact title-service pair and 32 px introductory rhythm", () =>
   assert.match(css, /\.case-page__intro \.case-page__summary\s*\{[^}]*\bmargin-top:\s*32px;/, "the first introductory copy must begin 32 px after the service line");
 });
 
+test("uses full-bleed mobile rasters without grey media surfaces", () => {
+  const css = readFileSync(globalStyles, "utf8");
+  const mobileStyles = css.slice(css.indexOf("@media (max-width: 767px)"));
+
+  assert.match(
+    mobileStyles,
+    /\.case-page__media\s*\{[^}]*\bwidth:\s*calc\(100%\s*\+\s*48px\);[^}]*\bmax-width:\s*none;[^}]*\bmargin-inline:\s*-24px;[^}]*\baspect-ratio:\s*auto;[^}]*\bmin-height:\s*0;[^}]*\bpadding-inline:\s*0;[^}]*\bbackground:\s*transparent;/,
+    "mobile case media must leave the text gutters, remove its grey surface and extend its raster to the viewport edges"
+  );
+  assert.match(
+    mobileStyles,
+    /\.case-page__media img\s*\{[^}]*\bwidth:\s*100%;[^}]*\bmax-width:\s*none;[^}]*\bheight:\s*auto;[^}]*\bmax-height:\s*none;/,
+    "mobile case rasters must fill the full-bleed media frame without an internal inset"
+  );
+});
+
 test("keeps narrow case stories inside the page gutters", () => {
   const css = readFileSync(globalStyles, "utf8");
 

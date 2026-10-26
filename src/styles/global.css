@@ -1243,7 +1243,20 @@ a[data-rising-ink].is-rising-ink-ready:hover {
   }
 
   .case-page__media {
+    width: calc(100% + 48px);
+    max-width: none;
+    margin-inline: -24px;
+    aspect-ratio: auto;
     min-height: 0;
+    padding-inline: 0;
+    background: transparent;
+  }
+
+  .case-page__media img {
+    width: 100%;
+    max-width: none;
+    height: auto;
+    max-height: none;
   }
 
   .case-page__intro h1 {
