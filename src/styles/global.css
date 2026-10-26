@@ -1173,7 +1173,7 @@ a[data-rising-ink].is-rising-ink-ready:hover {
 
   .home__header {
     gap: 16px;
-    padding-top: 16px;
+    padding-top: 0;
   }
 
   .site-identity__summary {
@@ -1196,6 +1196,7 @@ a[data-rising-ink].is-rising-ink-ready:hover {
   }
 
   .home__contact-links {
+    gap: 16px;
     margin-top: 0;
   }
 

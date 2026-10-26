@@ -49,7 +49,8 @@ test("built home exposes the visible Figma project-card hierarchy", () => {
   assert.match(html, /class="visually-hidden">Władysław — design digital products, from strategy to deployment and beyond<\/span>/, "the identity heading must expose a complete accessible sentence");
   assert.match(html, /class="site-identity__summary-visual" aria-hidden="true"/, "the visual identity summary must be isolated from its accessible copy");
   assert.match(html, /class="home__contact-copy" aria-hidden="true"/, "the visual contact lines must be isolated from their accessible copy");
-  assert.match(html, /class="visually-hidden">have a project in mind\? always open to interesting projects, collaborations and conversations about ideas worth bringing to life — let(?:&#39;|')s talk<\/span>/, "the contact copy must expose a complete accessible sentence");
+  assert.match(html, /class="home__contact-copy" aria-hidden="true">have a project in mind\? always open to<br>interesting projects, collaborations and<br>conversations about ideas worth bringing to life — let(?:&#39;|')s talk:<\/span>/, "the visible contact copy must keep the invitation on three lines and finish with a colon");
+  assert.match(html, /class="visually-hidden">have a project in mind\? always open to interesting projects, collaborations and conversations about ideas worth bringing to life — let(?:&#39;|')s talk:<\/span>/, "the contact copy must expose the complete updated sentence");
 });
 
 test("built home pairs small links with decorative minimalist icons", () => {
@@ -143,6 +144,9 @@ test("mobile contact hides the invitation copy without adding a Let’s Talk lin
   assert.match(mobileStyles, /\.home__contact-intro\s*\{[^}]*\bdisplay:\s*none;/, "the invitation copy must not occupy the mobile header");
   assert.doesNotMatch(mobileStyles, /\.home__contact-talk/, "mobile styles must not reserve space for an extra Let’s Talk link");
   assert.match(mobileStyles, /\.home__contact-links\s*\{[^}]*\bmargin-top:\s*0;/, "email and Telegram must remain one compact mobile stack");
+  assert.match(mobileStyles, /\.home__header\s*\{[^}]*\bpadding-top:\s*0;/, "mobile links must begin without a top offset");
+  assert.match(mobileStyles, /\.home__right-column\s*\{[^}]*\bgap:\s*16px;/, "explore must retain the same 16 px rhythm before the contact stack");
+  assert.match(mobileStyles, /\.home__contact-links\s*\{[^}]*\bgap:\s*16px;[^}]*\bmargin-top:\s*0;/, "email and Telegram must use the same 16 px mobile link rhythm as explore");
 });
 
 test("keeps the contact column fixed while leaving twenty pixels empty on its right", () => {
