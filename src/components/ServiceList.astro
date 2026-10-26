@@ -1,4 +1,24 @@
+---
+import LinkIcon from "./LinkIcon.astro";
+---
+
 <section class="service-list" aria-label="Services" data-testid="services">
-  <h2>Product design</h2>
-  <h2>Digital experiences</h2>
+  <div class="service-list__item">
+    <h2>Product design</h2>
+    <p>from early concepts and product strategy to UX, UI and the details that make digital products work</p>
+  </div>
+  <div class="service-list__item">
+    <h2>Digital experiences</h2>
+    <p>designing and developing websites and digital experiences that connect business goals with user needs</p>
+  </div>
+  <div class="service-list__creative">
+    <div class="service-list__item">
+      <h2>Creative coding</h2>
+      <p>creating visual experiments, generative systems and code-driven experiences</p>
+    </div>
+    <span class="micro-link">
+      <a data-rising-ink class="service-list__link" href="https://wladysplaw.github.io/">explore</a>
+      <LinkIcon name="external" />
+    </span>
+  </div>
 </section>

@@ -5,8 +5,14 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 const testDirectory = path.dirname(fileURLToPath(import.meta.url));
+const productDirectory = path.resolve(testDirectory, "..");
 const distDirectory = path.resolve(testDirectory, "../dist");
+const publicDirectory = path.resolve(productDirectory, "public");
+const baseLayoutPath = path.resolve(productDirectory, "src/layouts/BaseLayout.astro");
 const siteOrigin = "https://wladysplaw.github.io";
+const approvedSameOriginDestinations = new Set([
+  new URL("/", siteOrigin).href
+]);
 
 function builtHtmlFiles(directory) {
   return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
@@ -60,6 +66,10 @@ function assertBaseScopedUrl(resourceUrl, documentUrl, htmlFile) {
     return;
   }
 
+  if (approvedSameOriginDestinations.has(resolvedUrl.href)) {
+    return;
+  }
+
   assert.ok(
     resolvedUrl.pathname.startsWith("/product/"),
     `${htmlFile} contains a same-origin resource outside /product/: ${resourceUrl}`
@@ -86,6 +96,7 @@ test("base-path classification uses URL origins rather than string prefixes", ()
   assert.doesNotThrow(() => assertBaseScopedUrl("//cdn.example/cover.png", documentUrl, "fixture.html"));
   assert.doesNotThrow(() => assertBaseScopedUrl("https://wladysplaw.github.io.evil/cover.png", documentUrl, "fixture.html"));
   assert.doesNotThrow(() => assertBaseScopedUrl("https://WLADYSPLAW.github.io/product/cover.png", documentUrl, "fixture.html"));
+  assert.doesNotThrow(() => assertBaseScopedUrl("https://wladysplaw.github.io/", documentUrl, "fixture.html"), "the approved main-site destination must remain available from /product/");
   assert.throws(
     () => assertBaseScopedUrl("https://WLADYSPLAW.github.io/outside/cover.png", documentUrl, "fixture.html"),
     /outside \/product\//
@@ -119,4 +130,30 @@ test("built HTML is safe to publish below /product/", () => {
   }
 
   assert.ok(publishedUrls.some((url) => url.startsWith("/product/")), "build must emit base-prefixed resources");
+});
+
+test("product pages expose the shared icon family and Open Graph image", () => {
+  for (const asset of ["favicon.svg", "favicon.ico", "apple-touch-icon.png", "og-image.png"]) {
+    assert.equal(existsSync(path.join(publicDirectory, asset)), true, `${asset} must be published from public/`);
+  }
+
+  const layout = readFileSync(baseLayoutPath, "utf8");
+
+  for (const requiredMarkup of [
+    'rel="icon" href={faviconIco}',
+    'rel="icon" href={faviconSvg}',
+    'rel="apple-touch-icon" href={appleTouchIcon}',
+    'property="og:image" content={ogImageUrl}',
+    'property="og:image:width" content="1200"',
+    'property="og:image:height" content="630"',
+    'name="twitter:card" content="summary_large_image"'
+  ]) {
+    assert.match(layout, new RegExp(requiredMarkup.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+  }
+
+  const indexHtml = readFileSync(path.join(distDirectory, "index.html"), "utf8");
+
+  assert.match(indexHtml, /https:\/\/wladysplaw\.github\.io\/product\/og-image\.png/);
+  assert.match(indexHtml, /<meta property="og:image:width" content="1200">/);
+  assert.match(indexHtml, /<meta name="twitter:card" content="summary_large_image">/);
 });

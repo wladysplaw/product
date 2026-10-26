@@ -24,6 +24,6 @@ export function getProjectNeighbors(slug: string, items: readonly Project[]): Pr
 
   return {
     previous: index > 0 ? items[index - 1] : undefined,
-    next: index >= 0 && index < items.length - 1 ? items[index + 1] : undefined
+    next: index >= 0 ? items[(index + 1) % items.length] : undefined
   };
 }

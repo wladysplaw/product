@@ -1,25 +1,40 @@
 ---
 import ProjectGrid from "../components/ProjectGrid.astro";
+import LinkIcon from "../components/LinkIcon.astro";
 import ServiceList from "../components/ServiceList.astro";
 import SiteFooter from "../components/SiteFooter.astro";
 import SiteIdentity from "../components/SiteIdentity.astro";
-import { projects } from "../data/projects";
+import { homeCards, projects } from "../data/projects";
 import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
 <BaseLayout title="Product" description="Independent product design and digital experience portfolio.">
-  <main class="home site-shell" id="main-content">
-    <h1 class="visually-hidden">Product</h1>
-    <header class="home__header">
-      <div class="home__intro">
+  <main class="home site-shell" id="main-content" data-page-kind="home" data-testid="figma-home">
+    <header class="home__header" data-testid="figma-home-header">
+      <div class="home__intro" data-motion-reveal="home-intro">
         <SiteIdentity />
       </div>
-      <div class="home__right-column">
+      <div class="home__right-column" data-motion-reveal="home-right">
         <ServiceList />
-        <a class="home__contact" href="https://t.me/saysskyy" target="_blank" rel="noreferrer">Let’s Talk</a>
+        <aside class="home__contact" aria-label="Contact">
+          <p class="home__contact-intro">
+            <span class="home__contact-copy" aria-hidden="true">have a project in mind? always open to<br />interesting projects, collaborations and<br />conversations about ideas worth bringing to life<br />— let's talk</span>
+            <span class="visually-hidden">have a project in mind? always open to interesting projects, collaborations and conversations about ideas worth bringing to life — let's talk</span>
+          </p>
+          <div class="home__contact-links">
+            <span class="micro-link">
+              <a data-rising-ink href="mailto:sprsplv@gmail.com">email</a>
+              <LinkIcon name="email" />
+            </span>
+            <span class="micro-link">
+              <a data-rising-ink href="https://t.me/saysskyy" target="_blank" rel="noreferrer">telegram</a>
+              <LinkIcon name="telegram" />
+            </span>
+          </div>
+        </aside>
       </div>
     </header>
-    <ProjectGrid projects={projects} />
+    <ProjectGrid projects={projects} cards={homeCards} />
   </main>
   <SiteFooter />
 </BaseLayout>

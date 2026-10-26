@@ -1,0 +1,29 @@
+---
+import type { Project } from "../data/projects";
+import FooterMarks from "./FooterMarks.astro";
+
+interface Props {
+  next: Project | undefined;
+}
+
+const { next } = Astro.props;
+const basePath = import.meta.env.BASE_URL;
+const nextHref = next ? `${basePath}projects/${next.slug}/` : null;
+---
+
+{
+  nextHref ? (
+    <section class="scroll-callout-region" data-scroll-callout-region>
+      <footer class="case-footer">
+        <div data-scroll-callout-stage class="scroll-callout-stage">
+          <a data-rising-ink data-scroll-callout class="case-footer__next" href={nextHref}>next</a>
+        </div>
+        <FooterMarks />
+      </footer>
+    </section>
+  ) : (
+    <footer class="case-footer">
+      <FooterMarks />
+    </footer>
+  )
+}

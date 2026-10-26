@@ -1,19 +1,35 @@
 ---
-import type { Project } from "../data/projects";
+import type { HomeProjectCard, Project } from "../data/projects";
 
 interface Props {
   project: Project;
+  card: HomeProjectCard;
+  domSnapshotDisplacement?: boolean;
 }
 
-const { project } = Astro.props;
+const { project, card, domSnapshotDisplacement = false } = Astro.props;
 const projectHref = `${import.meta.env.BASE_URL}projects/${project.slug}/`;
-const coverSrc = `${import.meta.env.BASE_URL}${project.cover.src.slice(1)}`;
+const coverSrc = `${import.meta.env.BASE_URL}${card.cover.src.slice(1)}`;
 ---
 
-<a class="project-card" href={projectHref}>
+<a
+  class="project-card"
+  href={projectHref}
+  data-testid="project-card"
+  data-motion-reveal="home-card"
+  data-dom-snapshot-displacement={domSnapshotDisplacement ? "true" : undefined}
+>
   <span class="project-card__copy">
     <span class="project-card__title">{project.title}</span>
     <span class="project-card__services">{project.services}</span>
   </span>
-  <img class="project-card__media" src={coverSrc} alt={project.cover.alt} />
+  {
+    card.mediaStatus === "ready" ? (
+      <span class="project-card__media">
+        <img src={coverSrc} alt={card.cover.alt} />
+      </span>
+    ) : (
+      <span class="project-card__media project-card__media--pending" aria-hidden="true"></span>
+    )
+  }
 </a>

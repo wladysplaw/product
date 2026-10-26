@@ -3,15 +3,18 @@
   --color-ink: #1d1d1d;
   --color-muted: #929292;
   --color-surface: #f4f4f4;
+  --color-border-subtle: #e1e1e1;
   --color-focus: #1d1d1d;
-  --font-sans: Arial, Helvetica, sans-serif;
-  --font-serif: Georgia, "Times New Roman", serif;
+  --font-sans: "TWK Lausanne", Arial, Helvetica, sans-serif;
+  --font-serif: "Serrif Compressed-TRIAL", Georgia, "Times New Roman", serif;
   --page-margin: 16px;
   --page-content-max: 1376px;
   --grid-gap: 8px;
-  --reading-measure: 37.125rem;
+  --headline-measure: 33.875rem;
+  --intro-measure: 37.125rem;
   --service-measure: 19.75rem;
-  --contact-measure: 16.0625rem;
+  --contact-column-measure: 16.0625rem;
+  --contact-measure: 14.8125rem;
 }
 
 @media (min-width: 768px) {

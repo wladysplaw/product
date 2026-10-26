@@ -1,7 +1,7 @@
 ---
 import type { Project } from "../data/projects";
 import type { ProjectNeighbors } from "../lib/projects";
-import SiteFooter from "./SiteFooter.astro";
+import CaseFooter from "./CaseFooter.astro";
 
 interface Props {
   project: Project;
@@ -11,35 +11,68 @@ interface Props {
 const { project, neighbors } = Astro.props;
 const basePath = import.meta.env.BASE_URL;
 const nextHref = neighbors.next ? `${basePath}projects/${neighbors.next.slug}/` : null;
+const [firstBlock, ...remainingBlocks] = project.blocks;
 ---
 
-<main class="case-page site-shell" id="main-content">
-  <nav class="case-page__navigation" aria-label="Project navigation">
-    <a href={basePath}>Back</a>
-    {nextHref ? <a href={nextHref}>Next</a> : <span aria-hidden="true">Next</span>}
+<main class="case-page" id="main-content" data-page-kind="case" data-testid="figma-case">
+  <nav class="case-page__navigation" aria-label="Project navigation" data-motion-reveal="case-nav">
+    <a data-rising-ink data-page-motion-direction="back" href={basePath}>back</a>
+    {nextHref ? <a data-rising-ink href={nextHref}>next</a> : <span aria-hidden="true">next</span>}
   </nav>
 
   <article class="case-page__body">
-    <header class="case-page__intro">
-      <h1>{project.title}</h1>
-      <p>{project.services}</p>
-      <p>{project.summary}</p>
-    </header>
+    <div class="case-page__opening">
+      <header class="case-page__intro" data-motion-reveal="case-intro">
+        <h1>{project.title}</h1>
+        <p class="case-page__services">{project.services}</p>
+        <p class="case-page__summary">{project.summary}</p>
+      </header>
 
-    <div class="case-page__blocks">
       {
-        project.blocks.map((block) =>
-          block.type === "image" ? (
-            <figure class="case-page__media">
-              <img src={`${basePath}${block.src.slice(1)}`} alt={block.alt} />
-              {block.caption ? <figcaption>{block.caption}</figcaption> : null}
-            </figure>
-          ) : (
+        firstBlock ? (
+          <section class="case-page__story case-page__story--first" data-motion-reveal="case-first-story" data-testid="case-story">
+            <p class="case-page__copy">{firstBlock.body}</p>
+          </section>
+        ) : null
+      }
+    </div>
+
+    {
+      firstBlock ? (
+        <div
+          class={`case-page__media case-page__media--first${firstBlock.media.frame === "subtle" ? " case-page__media--outlined" : ""}`}
+          data-motion-reveal="case-first-media"
+          data-testid="case-media"
+        >
+          {
+            firstBlock.mediaStatus === "ready" ? (
+              <img src={`${basePath}${firstBlock.media.src.slice(1)}`} alt={firstBlock.media.alt} />
+            ) : (
+              <span class="case-page__media-pending" aria-hidden="true"></span>
+            )
+          }
+        </div>
+      ) : null
+    }
+
+    <div class="case-page__blocks case-page__blocks--continuation">
+      {
+        remainingBlocks.map((block) => (
+          <section class="case-page__story" data-motion-reveal="case-continuation" data-testid="case-story">
             <p class="case-page__copy">{block.body}</p>
-          )
-        )
+            <div class={`case-page__media${block.media.frame === "subtle" ? " case-page__media--outlined" : ""}`} data-testid="case-media">
+              {
+                block.mediaStatus === "ready" ? (
+                  <img src={`${basePath}${block.media.src.slice(1)}`} alt={block.media.alt} />
+                ) : (
+                  <span class="case-page__media-pending" aria-hidden="true"></span>
+                )
+              }
+            </div>
+          </section>
+        ))
       }
     </div>
   </article>
 </main>
-<SiteFooter />
+<CaseFooter next={neighbors.next} />

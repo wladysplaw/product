@@ -1,24 +1,32 @@
 ---
-import type { Project } from "../data/projects";
+import type { HomeProjectCard, Project } from "../data/projects";
 import ProjectCard from "./ProjectCard.astro";
 
 interface Props {
   projects: readonly Project[];
+  cards: readonly HomeProjectCard[];
 }
 
-const { projects } = Astro.props;
+const { projects, cards } = Astro.props;
+const cardsWithProjects = cards.map((card) => {
+  const project = projects.find(({ slug }) => slug === card.projectSlug);
+
+  if (!project) {
+    throw new Error(`Home card ${card.id} refers to an unknown project: ${card.projectSlug}`);
+  }
+
+  return { card, project };
+});
 ---
 
 <section class="project-grid" aria-label="Projects" data-testid="project-grid">
   {
-    projects.length > 0 ? (
-      projects.map((project) => <ProjectCard project={project} />)
+    cardsWithProjects.length > 0 ? (
+      cardsWithProjects.map(({ card, project }) => (
+        <ProjectCard project={project} card={card} domSnapshotDisplacement={card.mediaStatus === "ready"} />
+      ))
     ) : (
-      <>
-        <p class="visually-hidden" role="status">No projects are published yet.</p>
-        <div class="project-grid__empty-surface" data-testid="empty-project-surface" aria-hidden="true"></div>
-        <div class="project-grid__empty-surface" data-testid="empty-project-surface" aria-hidden="true"></div>
-      </>
+      <p class="visually-hidden" role="status">No projects are published yet.</p>
     )
   }
 </section>
