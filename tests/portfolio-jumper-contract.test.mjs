@@ -37,9 +37,12 @@ test("launches from behind the top-right card, then returns behind it", () => {
   assert.match(jumper, /const targetCard = cards\[1\] \?\? cards\[0\];/, "desktop appearances must be anchored to the first right-hand card");
   assert.match(jumper, /random\(0\.06, 0\.60\)/, "most appearances must begin across the left and middle of that card");
   assert.match(jumper, /random\(0\.60, 0\.97\)/, "a smaller share of appearances may reach the right side of that card");
-  assert.doesNotMatch(attach[0], /jumper\.style\.opacity/, "the sprite must stay hidden until its launch state is prepared");
-  assert.match(jumper, /await animateY\(hiddenY, launchApexY/, "the first appearance must travel upward from behind the card");
-  assert.match(jumper, /await animateY\(launchApexY, hiddenY/, "the first appearance must fall back behind the card");
+  assert.match(attach[0], /const y = cardBox\.top - gridBox\.top - frameHeight - peakOffset;/, "the copied source axis must place the hidden frame inside the card and its peak directly above the card edge");
+  assert.match(attach[0], /jumper\.style\.opacity = "1";/, "the source lifecycle must prepare the sprite in the same synchronous task as its position");
+  assert.match(jumper, /const peakY = 0;/, "the original main-site peak must stay on its source axis");
+  assert.match(jumper, /await animateY\(hiddenY, peakY, 420, "cubic-bezier\(0\.16, 1, 0\.3, 1\)"\);\s*await playFrames\(\[5, 4, 3, 2, 1, 0\], 48\);\s*await wait\(random\(200, 900\)\);/s, "the initial rise must keep the original frame order and timing");
+  assert.match(jumper, /await playFrames\(\[0, 1, 2, 3, 4, 5\], 38\);\s*await animateY\(peakY, hiddenY, 260, "cubic-bezier\(0\.55, 0, 1, 0\.45\)"\);/s, "the original hide sequence must return the sprite behind the card");
+  assert.doesNotMatch(jumper, /launchApexY/, "the product copy must not introduce a second launch axis");
   assert.match(styles, /\.project-grid\s*\{[^}]*isolation:\s*isolate;/s, "the grid must establish one local stack for the sprite and cards");
   assert.match(styles, /\.portfolio-jumper\s*\{[^}]*z-index:\s*0;/s, "the sprite must sit behind card surfaces");
   assert.match(styles, /\.project-card\s*\{[^}]*z-index:\s*1;/s, "card surfaces must paint over the descending sprite");
