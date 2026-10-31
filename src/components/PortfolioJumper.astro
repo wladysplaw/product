@@ -21,7 +21,7 @@ const mountPortfolioJumper = () => {
   const spriteWidth = frameWidth * frameCount;
   const peakOffset = 3 * spriteScale;
   const hiddenY = frameHeight + peakOffset;
-  const peakY = 0;
+  const launchApexY = -frameHeight - peakOffset;
   const jumper = document.createElement("div");
   let activeCard = null;
   let hoverCount = 0;
@@ -84,17 +84,17 @@ const mountPortfolioJumper = () => {
       [
         {
           offset: 0,
-          transform: `translate(calc(-50% + ${startX}px), ${peakY}px)`,
+          transform: `translate(calc(-50% + ${startX}px), ${hiddenY}px)`,
           easing: "cubic-bezier(0.2, 0, 0.18, 1)"
         },
         {
           offset: 0.42,
-          transform: `translate(calc(-50% + ${apexX}px), -8px)`,
+          transform: `translate(calc(-50% + ${apexX}px), ${launchApexY - 6}px)`,
           easing: "cubic-bezier(0.34, 1.38, 0.64, 1)"
         },
         {
           offset: 1,
-          transform: `translate(calc(-50% + ${landingX}px), ${peakY}px)`
+          transform: `translate(calc(-50% + ${landingX}px), ${hiddenY}px)`
         }
       ],
       { duration, fill: "forwards" }
@@ -106,7 +106,7 @@ const mountPortfolioJumper = () => {
       // animation can be cancelled during route changes / reloads
     }
 
-    jumper.style.transform = `translate(calc(-50% + ${landingX}px), ${peakY}px)`;
+    jumper.style.transform = `translate(calc(-50% + ${landingX}px), ${hiddenY}px)`;
     animation.cancel();
   };
 
@@ -127,11 +127,11 @@ const mountPortfolioJumper = () => {
 
     const runDebugCycle = async () => {
       setFrame(frameCount - 1);
-      await animateY(hiddenY, peakY, 420, "cubic-bezier(0.16, 1, 0.3, 1)");
+      await animateY(hiddenY, launchApexY, 420, "cubic-bezier(0.16, 1, 0.3, 1)");
       await playFrames([5, 4, 3, 2, 1, 0], 48);
       await wait(900);
       await playFrames([0, 1, 2, 3, 4, 5], 38);
-      await animateY(peakY, hiddenY, 260, "cubic-bezier(0.55, 0, 1, 0.45)");
+      await animateY(launchApexY, hiddenY, 260, "cubic-bezier(0.55, 0, 1, 0.45)");
       await wait(900);
       runDebugCycle();
     };
@@ -140,26 +140,32 @@ const mountPortfolioJumper = () => {
     return;
   }
 
-  // chooseCard function removed
-
   const attachToPortfolio = () => {
     if (destroyed) return false;
     portfolio.append(jumper);
     jumper.style.position = "absolute";
 
-    const box = portfolio.getBoundingClientRect();
+    const gridBox = portfolio.getBoundingClientRect();
 
-    if (box.bottom <= 0 || box.top >= window.innerHeight) return false;
+    if (gridBox.bottom <= 0 || gridBox.top >= window.innerHeight) return false;
 
-    const isCompact = window.matchMedia("(max-width: 1024px)").matches;
-    const minX = isCompact ? 0.58 : 0.84;
-    const maxX = isCompact ? 0.9 : 0.97;
-    const x = portfolio.clientWidth * random(minX, maxX);
-    const y = -frameHeight - peakOffset;
+    const cards = Array.from(portfolio.querySelectorAll(".project-card"));
+    const targetCard = cards[1] ?? cards[0];
+    const isStacked = window.matchMedia("(max-width: 767px)").matches;
+    const anchorCard = isStacked ? cards[0] ?? targetCard : targetCard;
+
+    if (!anchorCard) return false;
+
+    const cardBox = anchorCard.getBoundingClientRect();
+    const isLeftOrMiddle = Math.random() < 0.84;
+    const cardX = isLeftOrMiddle
+      ? random(0.06, 0.60)
+      : random(0.60, 0.97);
+    const x = cardBox.left - gridBox.left + cardBox.width * cardX;
+    const y = cardBox.top - gridBox.top;
 
     jumper.style.left = `${x}px`;
     jumper.style.top = `${y}px`;
-    jumper.style.opacity = "1";
     return true;
   };
 
@@ -195,8 +201,8 @@ const mountPortfolioJumper = () => {
     clearAutoHide();
     clearIdleHop();
     isAnimating = true;
-    await playFrames([0, 1, 2, 3, 4, 5], 38);
-    await animateY(peakY, hiddenY, 260, "cubic-bezier(0.55, 0, 1, 0.45)");
+    setFrame(frameCount - 1);
+    setY(hiddenY);
     jumper.style.opacity = "0";
     jumper.style.pointerEvents = "none";
     activeCard = null;
@@ -255,10 +261,21 @@ const mountPortfolioJumper = () => {
     jumper.style.opacity = "1";
     jumper.style.pointerEvents = "auto";
 
-    await animateY(hiddenY, peakY, 420, "cubic-bezier(0.16, 1, 0.3, 1)");
-    await playFrames([5, 4, 3, 2, 1, 0], 48);
-    await wait(random(200, 900));
+    await Promise.all([
+      (async () => {
+        await animateY(hiddenY, launchApexY, 300, "cubic-bezier(0.16, 1, 0.3, 1)");
+        await wait(random(120, 260));
+        await animateY(launchApexY, hiddenY, 280, "cubic-bezier(0.55, 0, 1, 0.45)");
+      })(),
+      (async () => {
+        await playFrames([5, 4, 3, 2, 1, 0], 42);
+        await wait(92);
+        await playFrames([0, 1, 2, 3, 4, 5], 40);
+      })()
+    ]);
 
+    setY(hiddenY);
+    jumper.style.pointerEvents = "none";
     isAnimating = false;
     scheduleAutoHide();
     scheduleIdleHop();
@@ -283,7 +300,7 @@ const mountPortfolioJumper = () => {
     ]);
 
     jumperOffsetX = landingX;
-    setTransform(jumperOffsetX, peakY);
+    setTransform(jumperOffsetX, hiddenY);
     isAnimating = false;
     scheduleAutoHide();
     scheduleIdleHop();
@@ -296,9 +313,9 @@ const mountPortfolioJumper = () => {
 
     await Promise.all([
       (async () => {
-        const jumpHeight = -random(4, 8);
-        await animateY(peakY, jumpHeight, random(140, 220), "cubic-bezier(0.2, 0, 0.18, 1)");
-        await animateY(jumpHeight, peakY, random(180, 260), "cubic-bezier(0.22, 1, 0.36, 1)");
+        const jumpApexY = launchApexY - random(2, 6);
+        await animateY(hiddenY, jumpApexY, random(140, 220), "cubic-bezier(0.2, 0, 0.18, 1)");
+        await animateY(jumpApexY, hiddenY, random(180, 260), "cubic-bezier(0.22, 1, 0.36, 1)");
       })(),
       (async () => {
         await playFrames([0, 1, 2, 3, 4, 5], 32);
@@ -306,7 +323,7 @@ const mountPortfolioJumper = () => {
       })()
     ]);
 
-    setTransform(jumperOffsetX, peakY);
+    setTransform(jumperOffsetX, hiddenY);
     isAnimating = false;
     scheduleAutoHide();
     scheduleIdleHop();
@@ -326,22 +343,22 @@ const mountPortfolioJumper = () => {
       [
         {
           offset: 0,
-          transform: `translate(calc(-50% + ${startX}px), ${peakY}px)`,
+          transform: `translate(calc(-50% + ${startX}px), ${hiddenY}px)`,
           easing: "linear"
         },
         {
           offset: 0.22,
-          transform: `translate(calc(-50% + ${startX + 3 * direction}px), -7px)`,
+          transform: `translate(calc(-50% + ${startX + 3 * direction}px), ${launchApexY + 8}px)`,
           easing: "linear"
         },
         {
           offset: 0.46,
-          transform: `translate(calc(-50% + ${apexX}px), -12px)`,
+          transform: `translate(calc(-50% + ${apexX}px), ${launchApexY - 6}px)`,
           easing: "linear"
         },
         {
           offset: 0.7,
-          transform: `translate(calc(-50% + ${startX + 14 * direction}px), -4px)`,
+          transform: `translate(calc(-50% + ${startX + 14 * direction}px), ${launchApexY + 8}px)`,
           easing: "linear"
         },
         {

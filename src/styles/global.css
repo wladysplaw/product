@@ -693,6 +693,7 @@ a[data-rising-ink].is-rising-ink-ready:hover {
 .project-grid {
   grid-column: 1 / -1;
   position: relative;
+  isolation: isolate;
   display: grid;
   grid-template-columns: subgrid;
   grid-auto-rows: auto;
@@ -705,7 +706,7 @@ a[data-rising-ink].is-rising-ink-ready:hover {
   position: absolute;
   width: 9px;
   height: 12px;
-  z-index: 9999;
+  z-index: 0;
   border: none;
   padding: 0;
   margin: 0;
@@ -744,6 +745,7 @@ a[data-rising-ink].is-rising-ink-ready:hover {
   display: block;
   min-width: 0;
   min-height: 0;
+  z-index: 1;
   aspect-ratio: 684 / 638;
   background: var(--color-surface);
 }
