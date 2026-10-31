@@ -692,12 +692,50 @@ a[data-rising-ink].is-rising-ink-ready:hover {
 
 .project-grid {
   grid-column: 1 / -1;
+  position: relative;
   display: grid;
   grid-template-columns: subgrid;
   grid-auto-rows: auto;
   column-gap: var(--grid-gap);
   row-gap: var(--grid-gap);
   margin-top: 0;
+}
+
+.portfolio-jumper {
+  position: absolute;
+  width: 9px;
+  height: 12px;
+  z-index: 9999;
+  border: none;
+  padding: 0;
+  margin: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  display: block;
+  overflow: hidden;
+  font-size: 0;
+  line-height: 0;
+  color: transparent;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  background-size: 54px 12px;
+  box-shadow: none;
+  outline: none;
+  filter: none;
+  image-rendering: pixelated;
+  opacity: 0;
+  pointer-events: auto;
+  cursor: default;
+  user-select: none;
+  transform: translate(-50%, 15px);
+  transition: none;
+  will-change: transform, opacity;
+}
+
+.portfolio-jumper::before,
+.portfolio-jumper::after {
+  content: none;
 }
 
 .project-card {

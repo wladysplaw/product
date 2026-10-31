@@ -1,6 +1,7 @@
 ---
 import type { HomeProjectCard, Project } from "../data/projects";
 import ProjectCard from "./ProjectCard.astro";
+import PortfolioJumper from "./PortfolioJumper.astro";
 
 interface Props {
   projects: readonly Project[];
@@ -19,7 +20,7 @@ const cardsWithProjects = cards.map((card) => {
 });
 ---
 
-<section class="project-grid" aria-label="Projects" data-testid="project-grid">
+<section class="project-grid" aria-label="Projects" data-testid="project-grid" data-portfolio-jumper-host>
   {
     cardsWithProjects.length > 0 ? (
       cardsWithProjects.map(({ card, project }) => (
@@ -29,4 +30,5 @@ const cardsWithProjects = cards.map((card) => {
       <p class="visually-hidden" role="status">No projects are published yet.</p>
     )
   }
+  <PortfolioJumper />
 </section>

@@ -1,0 +1,498 @@
+---
+/*
+  The sprite runtime below is copied from the main-site portfolio unchanged in
+  its visible behaviour. The lifecycle wrapper only lets Astro's client router
+  cleanly remount it when the home grid re-enters the document.
+*/
+---
+
+<script>
+const mountPortfolioJumper = () => {
+  const debugCenter = false;
+  const portfolio = document.querySelector("[data-portfolio-jumper-host]");
+  if (!(portfolio instanceof HTMLElement)) return;
+
+  const assetBasePath = import.meta.env.BASE_URL.endsWith("/") ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
+  const jumperSpriteSrc = `${assetBasePath}assets/jumper.svg`;
+  const spriteScale = 1;
+  const frameWidth = 9 * spriteScale;
+  const frameHeight = 12 * spriteScale;
+  const frameCount = 6;
+  const spriteWidth = frameWidth * frameCount;
+  const peakOffset = 3 * spriteScale;
+  const hiddenY = frameHeight + peakOffset;
+  const peakY = 0;
+  const jumper = document.createElement("div");
+  let activeCard = null;
+  let hoverCount = 0;
+  let escapeHoverCount = 3;
+  let isAnimating = false;
+  let spawnTimer = 0;
+  let autoHideTimer = 0;
+  let idleHopTimer = 0;
+  let isPointerInsideJumper = false;
+  let jumperOffsetX = 0;
+  let destroyed = false;
+
+  jumper.className = "portfolio-jumper";
+  jumper.setAttribute("aria-hidden", "true");
+  jumper.tabIndex = -1;
+  jumper.style.backgroundImage = `url("${jumperSpriteSrc}")`;
+  jumper.style.width = `${frameWidth}px`;
+  jumper.style.height = `${frameHeight}px`;
+  jumper.style.backgroundSize = `${spriteWidth}px ${frameHeight}px`;
+
+  const random = (min, max) => min + Math.random() * (max - min);
+  const wait = (duration) => new Promise((resolve) => window.setTimeout(resolve, duration));
+
+  const setFrame = (frameIndex) => {
+    const safeFrame = Math.max(0, Math.min(frameCount - 1, Math.round(frameIndex)));
+    jumper.style.backgroundPosition = `${-(safeFrame * frameWidth)}px 0px`;
+  };
+
+  const setTransform = (x, y) => {
+    jumper.style.transform = `translate(calc(-50% + ${x}px), ${y}px)`;
+  };
+
+  const setY = (value) => {
+    setTransform(jumperOffsetX, value);
+  };
+
+  const animateY = async (from, to, duration, easing = "cubic-bezier(0.22, 1, 0.36, 1)") => {
+    setY(from);
+    const currentX = jumperOffsetX;
+    const animation = jumper.animate(
+      [
+        { transform: `translate(calc(-50% + ${currentX}px), ${from}px)` },
+        { transform: `translate(calc(-50% + ${currentX}px), ${to}px)` }
+      ],
+      { duration, easing, fill: "forwards" }
+    );
+
+    try {
+      await animation.finished;
+    } catch {
+      // animation can be cancelled during route changes / reloads
+    }
+
+    setY(to);
+    animation.cancel();
+  };
+
+  const animateHopArc = async (startX, apexX, landingX, duration = 430) => {
+    const animation = jumper.animate(
+      [
+        {
+          offset: 0,
+          transform: `translate(calc(-50% + ${startX}px), ${peakY}px)`,
+          easing: "cubic-bezier(0.2, 0, 0.18, 1)"
+        },
+        {
+          offset: 0.42,
+          transform: `translate(calc(-50% + ${apexX}px), -8px)`,
+          easing: "cubic-bezier(0.34, 1.38, 0.64, 1)"
+        },
+        {
+          offset: 1,
+          transform: `translate(calc(-50% + ${landingX}px), ${peakY}px)`
+        }
+      ],
+      { duration, fill: "forwards" }
+    );
+
+    try {
+      await animation.finished;
+    } catch {
+      // animation can be cancelled during route changes / reloads
+    }
+
+    jumper.style.transform = `translate(calc(-50% + ${landingX}px), ${peakY}px)`;
+    animation.cancel();
+  };
+
+  const playFrames = async (frames, frameDuration = 55) => {
+    for (const frame of frames) {
+      setFrame(frame);
+      await wait(frameDuration);
+    }
+  };
+
+  if (debugCenter) {
+    document.body.append(jumper);
+    jumper.style.position = "fixed";
+    jumper.style.left = "50%";
+    jumper.style.top = "50%";
+    jumper.style.zIndex = "9999";
+    jumper.style.opacity = "1";
+
+    const runDebugCycle = async () => {
+      setFrame(frameCount - 1);
+      await animateY(hiddenY, peakY, 420, "cubic-bezier(0.16, 1, 0.3, 1)");
+      await playFrames([5, 4, 3, 2, 1, 0], 48);
+      await wait(900);
+      await playFrames([0, 1, 2, 3, 4, 5], 38);
+      await animateY(peakY, hiddenY, 260, "cubic-bezier(0.55, 0, 1, 0.45)");
+      await wait(900);
+      runDebugCycle();
+    };
+
+    runDebugCycle();
+    return;
+  }
+
+  // chooseCard function removed
+
+  const attachToPortfolio = () => {
+    if (destroyed) return false;
+    portfolio.append(jumper);
+    jumper.style.position = "absolute";
+
+    const box = portfolio.getBoundingClientRect();
+
+    if (box.bottom <= 0 || box.top >= window.innerHeight) return false;
+
+    const isCompact = window.matchMedia("(max-width: 1024px)").matches;
+    const minX = isCompact ? 0.58 : 0.84;
+    const maxX = isCompact ? 0.9 : 0.97;
+    const x = portfolio.clientWidth * random(minX, maxX);
+    const y = -frameHeight - peakOffset;
+
+    jumper.style.left = `${x}px`;
+    jumper.style.top = `${y}px`;
+    jumper.style.opacity = "1";
+    return true;
+  };
+
+  const clearAutoHide = () => {
+    if (autoHideTimer) {
+      window.clearTimeout(autoHideTimer);
+      autoHideTimer = 0;
+    }
+  };
+
+  const clearIdleHop = () => {
+    if (idleHopTimer) {
+      window.clearTimeout(idleHopTimer);
+      idleHopTimer = 0;
+    }
+  };
+
+  const scheduleSpawn = (initial = false) => {
+    if (destroyed) return;
+    if (spawnTimer) window.clearTimeout(spawnTimer);
+
+    const delay = initial
+      ? random(400, 1600)
+      : (Math.random() < 0.6
+          ? random(1200, 6000)
+          : random(6000, 14000));
+
+    spawnTimer = window.setTimeout(spawn, delay);
+  };
+
+  const hide = async () => {
+    if (isAnimating) return;
+    clearAutoHide();
+    clearIdleHop();
+    isAnimating = true;
+    await playFrames([0, 1, 2, 3, 4, 5], 38);
+    await animateY(peakY, hiddenY, 260, "cubic-bezier(0.55, 0, 1, 0.45)");
+    jumper.style.opacity = "0";
+    jumper.style.pointerEvents = "none";
+    activeCard = null;
+    hoverCount = 0;
+    isPointerInsideJumper = false;
+    isAnimating = false;
+    scheduleSpawn();
+  };
+
+  const scheduleAutoHide = () => {
+    if (destroyed) return;
+    clearAutoHide();
+
+    const lifetime = Math.random() < 0.5
+      ? random(3000, 6000)
+      : random(6000, 12000);
+
+    autoHideTimer = window.setTimeout(() => {
+      if (!isAnimating && activeCard) hide();
+    }, lifetime);
+  };
+
+  const scheduleIdleHop = () => {
+    if (destroyed) return;
+    clearIdleHop();
+
+    const delay = Math.random() < 0.7
+      ? random(1200, 2800)
+      : random(2800, 5200);
+
+    idleHopTimer = window.setTimeout(() => {
+      if (!isAnimating && activeCard) idleHop();
+    }, delay);
+  };
+
+  async function spawn() {
+    if (destroyed) return;
+    if (isAnimating || activeCard) {
+      scheduleSpawn();
+      return;
+    }
+
+    if (!attachToPortfolio()) {
+      scheduleSpawn();
+      return;
+    }
+
+    isAnimating = true;
+    hoverCount = 0;
+    escapeHoverCount = Math.floor(random(2, 6));
+    isPointerInsideJumper = false;
+    jumperOffsetX = 0;
+    activeCard = portfolio;
+    setFrame(frameCount - 1);
+    setY(hiddenY);
+    jumper.style.opacity = "1";
+    jumper.style.pointerEvents = "auto";
+
+    await animateY(hiddenY, peakY, 420, "cubic-bezier(0.16, 1, 0.3, 1)");
+    await playFrames([5, 4, 3, 2, 1, 0], 48);
+    await wait(random(200, 900));
+
+    isAnimating = false;
+    scheduleAutoHide();
+    scheduleIdleHop();
+  }
+
+  const hop = async (direction = 1) => {
+    if (isAnimating || !activeCard) return;
+    clearAutoHide();
+    clearIdleHop();
+    isAnimating = true;
+
+    const startX = jumperOffsetX;
+    const landingX = startX + 7 * direction;
+    const apexX = startX + 3.5 * direction;
+
+    await Promise.all([
+      animateHopArc(startX, apexX, landingX, 430),
+      (async () => {
+        await playFrames([0, 1, 2, 3, 4, 5], 34);
+        await playFrames([5, 4, 3, 2, 1, 0], 38);
+      })()
+    ]);
+
+    jumperOffsetX = landingX;
+    setTransform(jumperOffsetX, peakY);
+    isAnimating = false;
+    scheduleAutoHide();
+    scheduleIdleHop();
+  };
+
+  const idleHop = async () => {
+    if (isAnimating || !activeCard) return;
+    clearIdleHop();
+    isAnimating = true;
+
+    await Promise.all([
+      (async () => {
+        const jumpHeight = -random(4, 8);
+        await animateY(peakY, jumpHeight, random(140, 220), "cubic-bezier(0.2, 0, 0.18, 1)");
+        await animateY(jumpHeight, peakY, random(180, 260), "cubic-bezier(0.22, 1, 0.36, 1)");
+      })(),
+      (async () => {
+        await playFrames([0, 1, 2, 3, 4, 5], 32);
+        await playFrames([5, 4, 3, 2, 1, 0], 36);
+      })()
+    ]);
+
+    setTransform(jumperOffsetX, peakY);
+    isAnimating = false;
+    scheduleAutoHide();
+    scheduleIdleHop();
+  };
+
+  const escapeHop = async (direction = 1) => {
+    if (isAnimating || !activeCard) return;
+    clearAutoHide();
+    clearIdleHop();
+    isAnimating = true;
+
+    const startX = jumperOffsetX;
+    const escapeX = startX + 18 * direction;
+    const apexX = startX + 9 * direction;
+
+    const escapeAnimation = jumper.animate(
+      [
+        {
+          offset: 0,
+          transform: `translate(calc(-50% + ${startX}px), ${peakY}px)`,
+          easing: "linear"
+        },
+        {
+          offset: 0.22,
+          transform: `translate(calc(-50% + ${startX + 3 * direction}px), -7px)`,
+          easing: "linear"
+        },
+        {
+          offset: 0.46,
+          transform: `translate(calc(-50% + ${apexX}px), -12px)`,
+          easing: "linear"
+        },
+        {
+          offset: 0.7,
+          transform: `translate(calc(-50% + ${startX + 14 * direction}px), -4px)`,
+          easing: "linear"
+        },
+        {
+          offset: 1,
+          transform: `translate(calc(-50% + ${escapeX}px), ${hiddenY}px)`
+        }
+      ],
+      { duration: 720, easing: "cubic-bezier(0.22, 0.82, 0.28, 1)", fill: "forwards" }
+    );
+
+    await Promise.all([
+      escapeAnimation.finished.catch(() => {}),
+      (async () => {
+        await playFrames([0, 1, 2, 3, 4, 5], 30);
+        await playFrames([5, 4, 3, 2, 1, 0], 36);
+      })()
+    ]);
+
+    jumperOffsetX = escapeX;
+    setTransform(jumperOffsetX, hiddenY);
+    escapeAnimation.cancel();
+
+    jumper.style.opacity = "0";
+    jumper.style.pointerEvents = "none";
+
+    activeCard = null;
+    hoverCount = 0;
+    isPointerInsideJumper = false;
+    isAnimating = false;
+
+    scheduleSpawn();
+  };
+
+  const handleJumperHover = (direction = 1) => {
+    if (!activeCard || isAnimating) return;
+    hoverCount += 1;
+
+    if (hoverCount >= escapeHoverCount) {
+      escapeHop(direction);
+      return;
+    }
+
+    hop(direction);
+  };
+
+  const updatePointerJumperHit = (event) => {
+    if (!activeCard) {
+      isPointerInsideJumper = false;
+      return;
+    }
+
+    const box = jumper.getBoundingClientRect();
+    const hitPadding = 14;
+    const isInside =
+      event.clientX >= box.left - hitPadding &&
+      event.clientX <= box.right + hitPadding &&
+      event.clientY >= box.top - hitPadding &&
+      event.clientY <= box.bottom + hitPadding;
+
+    if (isInside && !isPointerInsideJumper) {
+      isPointerInsideJumper = true;
+      const centerX = box.left + box.width / 2;
+      const direction = event.clientX < centerX ? 1 : -1;
+      handleJumperHover(direction);
+      return;
+    }
+
+    if (!isInside) {
+      isPointerInsideJumper = false;
+    }
+  };
+
+  jumper.addEventListener("pointerenter", (event) => {
+    const box = jumper.getBoundingClientRect();
+    const centerX = box.left + box.width / 2;
+    const direction = event.clientX < centerX ? 1 : -1;
+    handleJumperHover(direction);
+  });
+  window.addEventListener("pointermove", updatePointerJumperHit, { passive: true });
+
+  const handleResize = () => {
+    if (activeCard) attachToPortfolio();
+  };
+
+  const destroy = () => {
+    if (destroyed) return;
+    destroyed = true;
+    if (spawnTimer) window.clearTimeout(spawnTimer);
+    spawnTimer = 0;
+    clearAutoHide();
+    clearIdleHop();
+    window.removeEventListener("resize", handleResize);
+    window.removeEventListener("pointermove", updatePointerJumperHit);
+    jumper.remove();
+  };
+
+  window.addEventListener("resize", handleResize);
+  window.addEventListener("pagehide", destroy, { once: true });
+
+  const startWhenIdle = window.requestIdleCallback ?? ((callback) => window.setTimeout(callback, 1200));
+  startWhenIdle(() => {
+    window.setTimeout(() => {
+      spawn();
+    }, random(4000, 10000));
+  });
+
+  return destroy;
+};
+
+
+
+  type PortfolioJumperLifecycle = {
+    host: HTMLElement;
+    destroy: () => void;
+  };
+
+  type PortfolioJumperWindow = Window & {
+    __productPortfolioJumperLifecycle?: PortfolioJumperLifecycle;
+    __productPortfolioJumperLifecycleBound?: boolean;
+  };
+
+  const jumperWindow = window as PortfolioJumperWindow;
+
+  const unmountPortfolioJumper = () => {
+    jumperWindow.__productPortfolioJumperLifecycle?.destroy();
+    delete jumperWindow.__productPortfolioJumperLifecycle;
+  };
+
+  const mountPortfolioJumperForRoute = () => {
+    const host = document.querySelector("[data-portfolio-jumper-host]");
+
+    if (!(host instanceof HTMLElement)) {
+      unmountPortfolioJumper();
+      return;
+    }
+
+    if (jumperWindow.__productPortfolioJumperLifecycle?.host === host) return;
+
+    unmountPortfolioJumper();
+    const destroy = mountPortfolioJumper();
+
+    if (typeof destroy === "function") {
+      jumperWindow.__productPortfolioJumperLifecycle = { host, destroy };
+    }
+  };
+
+  if (!jumperWindow.__productPortfolioJumperLifecycleBound) {
+    jumperWindow.__productPortfolioJumperLifecycleBound = true;
+    document.addEventListener("astro:before-swap", unmountPortfolioJumper);
+    document.addEventListener("astro:page-load", mountPortfolioJumperForRoute);
+  }
+
+  mountPortfolioJumperForRoute();
+</script>
