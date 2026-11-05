@@ -39,29 +39,29 @@ test("publishes each visible home card as its own project route", () => {
   assert.deepEqual(
     projects.map(({ slug }) => slug),
     [
-      "content-platform-experiments",
       "football-federation",
-      "sheremetyevo-international-airport",
       "research-platform",
+      "content-platform-experiments",
+      "sheremetyevo-international-airport",
       "internet-computer",
       "breaking"
     ]
   );
   assert.deepEqual(getProjectPaths(projects), [
-    { params: { slug: "content-platform-experiments" } },
     { params: { slug: "football-federation" } },
-    { params: { slug: "sheremetyevo-international-airport" } },
     { params: { slug: "research-platform" } },
+    { params: { slug: "content-platform-experiments" } },
+    { params: { slug: "sheremetyevo-international-airport" } },
     { params: { slug: "internet-computer" } },
     { params: { slug: "breaking" } }
   ]);
   assert.deepEqual(
     homeCards.map(({ projectSlug }) => projectSlug),
     [
-      "content-platform-experiments",
       "football-federation",
-      "sheremetyevo-international-airport",
       "research-platform",
+      "content-platform-experiments",
+      "sheremetyevo-international-airport",
       "internet-computer",
       "breaking"
     ]
@@ -90,6 +90,46 @@ test("publishes each visible home card as its own project route", () => {
   assert.ok(researchPlatform, "the research platform case must remain available");
   assert.ok(internetComputer, "the internet computer case must remain available");
   assert.ok(breaking, "the breaking case must remain available");
+  assert.deepEqual(
+    projects.slice(0, 5).map(({ slug, services, summary }) => ({ slug, services, summary })),
+    [
+      {
+        slug: "football-federation",
+        services: "product direction & ux/ui",
+        summary:
+          "a management platform for a football federation, bringing clubs, tournaments, matches, players, coaches and staff into one working environment — i led product and design direction, shaped key decisions and guided the team through the ux/ui design of core management workflows"
+      },
+      {
+        slug: "research-platform",
+        services: "research & product design",
+        summary:
+          "a goal-setting product explored from research to a working interface model — i studied academic sources alongside market and product patterns, then translated the findings into workstreams, feature priorities, a design system and core screens"
+      },
+      {
+        slug: "content-platform-experiments",
+        services: "product strategy & ux/ui",
+        summary:
+          "a series of product experiments around social content and creator monetisation — i developed hypotheses, user flows and interface concepts around discovery, paid posts, subscriptions, paywalls and settlement"
+      },
+      {
+        slug: "sheremetyevo-international-airport",
+        services: "service design & ux/ui",
+        summary:
+          "a multi-device passenger-service ecosystem spanning the website, mobile app, wearable app and airport terminals — i designed the service experience and visual system across these touchpoints"
+      },
+      {
+        slug: "internet-computer",
+        services: "web design & motion",
+        summary:
+          "digital launch work for a blockchain protocol with a developer audience — at clay, i contributed to several launches and two website directions, using interface design, motion and narrative to make technical concepts easier to understand"
+      }
+    ]
+  );
+  assert.equal(breaking.services, "branding, communication");
+  assert.equal(
+    breaking.summary,
+    "brand communication for a multi-asset staking service — animated smoke, black 3d flowers and editorial type give the technical offer its own memorable voice"
+  );
   assert.ok(
     contentPlatform.blocks.every(({ body, mediaStatus }) => body !== "text placeholder" && mediaStatus === "ready"),
     "every supplied content-platform screen must have its authored copy before the image"

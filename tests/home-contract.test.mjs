@@ -36,7 +36,7 @@ test("built home exposes the visible Figma project-card hierarchy", () => {
   assert.equal(projectCardCount, 6, "home must expose all six visible Figma card instances");
   assert.match(html, /content platform experiments/, "home must retain the Pock project label");
   assert.match(html, /football federation platform/, "home must retain the compact football federation label");
-  assert.match(html, /art direction, concept, ux\/ui — at brele/, "home must credit the football federation work to brele");
+  assert.match(html, /product direction (?:&amp;|&) ux\/ui/, "home must identify the football federation contribution concisely");
   assert.match(html, /Sheremetyevo International Airport/, "home must label the Sheremetyevo card independently");
   assert.match(html, /research platform/, "home must label the research card independently");
   assert.match(html, /internet computer/, "home must label the Internet Computer card independently");
@@ -78,10 +78,10 @@ test("built home pairs small links with decorative minimalist icons", () => {
 test("built home sends each card to its dedicated case and local cover", () => {
   const html = readFileSync(builtHome, "utf8");
   const expectedCards = [
-    ["/product/projects/content-platform-experiments/", "/product/assets/projects/content-platform-experiments/s_1.png"],
     ["/product/projects/football-federation/", "/product/assets/projects/football-federation/qf_1.png"],
-    ["/product/projects/sheremetyevo-international-airport/", "/product/assets/projects/sheremetyevo-international-airport/sh_1.png"],
     ["/product/projects/research-platform/", "/product/assets/projects/research-platform/xx_1.png"],
+    ["/product/projects/content-platform-experiments/", "/product/assets/projects/content-platform-experiments/s_1.png"],
+    ["/product/projects/sheremetyevo-international-airport/", "/product/assets/projects/sheremetyevo-international-airport/sh_1.png"],
     ["/product/projects/internet-computer/", "/product/assets/projects/internet-computer/ic_1.png"],
     ["/product/projects/breaking/", "/product/assets/projects/breaking/hg_1.png"]
   ];
@@ -92,18 +92,18 @@ test("built home sends each card to its dedicated case and local cover", () => {
   }
 });
 
-test("built home credits internet computer as lead design at clay", () => {
+test("built home identifies internet computer through its web and motion contribution", () => {
   const html = readFileSync(builtHome, "utf8");
 
   assert.match(
     html,
-    /<span class="project-card__title">internet computer<\/span><span class="project-card__services">lead design at clay<\/span>/,
-    "the internet computer card must name the owner role and Clay studio"
+    /<span class="project-card__title">internet computer<\/span><span class="project-card__services">web design (?:&amp;|&) motion<\/span>/,
+    "the internet computer card must name the agreed contribution"
   );
   assert.doesNotMatch(
     html,
-    /<span class="project-card__title">internet computer<\/span><span class="project-card__services">digital experience<\/span>/,
-    "the outdated generic internet computer label must not remain"
+    /<span class="project-card__title">internet computer<\/span><span class="project-card__services">lead design at clay<\/span>/,
+    "the outdated owner-role label must not remain"
   );
 });
 

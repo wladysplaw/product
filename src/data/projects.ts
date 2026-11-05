@@ -40,13 +40,13 @@ function placeholderBlocks(media: readonly ProjectCover[]): ProjectBlock[] {
   }));
 }
 
-export const projects: Project[] = [
+const projectDefinitions: Project[] = [
   {
     slug: "content-platform-experiments",
     title: "content platform experiments",
-    services: "end-to-end",
+    services: "product strategy & ux/ui",
     summary:
-      "a series of experimental digital products exploring new ways to create, distribute and monetize content — each product serves as a testing ground for product hypotheses, user behaviors and business models, helping identify promising ideas and opportunities for further development",
+      "a series of product experiments around social content and creator monetisation — i developed hypotheses, user flows and interface concepts around discovery, paid posts, subscriptions, paywalls and settlement",
     cover: {
       src: "/assets/projects/content-platform-experiments/s_1.png",
       alt: "Pock content platform interface"
@@ -103,9 +103,9 @@ export const projects: Project[] = [
   {
     slug: "football-federation",
     title: "football federation platform",
-    services: "art direction, concept, ux/ui — at brele",
+    services: "product direction & ux/ui",
     summary:
-      "a federation management portal where each football federation runs its own digital ecosystem — clubs, tournaments, matches, players, coaches and every workflow around them live in one connected system",
+      "a management platform for a football federation, bringing clubs, tournaments, matches, players, coaches and staff into one working environment — i led product and design direction, shaped key decisions and guided the team through the ux/ui design of core management workflows",
     cover: {
       src: "/assets/projects/football-federation/qf_1.png",
       alt: "Digital platform for the football federation interface"
@@ -140,9 +140,9 @@ export const projects: Project[] = [
   {
     slug: "sheremetyevo-international-airport",
     title: "sheremetyevo international airport",
-    services: "lead design at beta",
+    services: "service design & ux/ui",
     summary:
-      "a connected airport product ecosystem spanning the website, mobile app, watch app, navigation maps and terminal maps — lead design at beta brought the system together across passenger journeys, terminal navigation and airport services",
+      "a multi-device passenger-service ecosystem spanning the website, mobile app, wearable app and airport terminals — i designed the service experience and visual system across these touchpoints",
     cover: {
       src: "/assets/projects/sheremetyevo-international-airport/sh_1.png",
       alt: "sheremetyevo international airport screen"
@@ -201,9 +201,9 @@ export const projects: Project[] = [
   {
     slug: "research-platform",
     title: "research platform",
-    services: "end-to-end",
+    services: "research & product design",
     summary:
-      "end-to-end research and product design for a system that helps people set goals and reach them — evidence, market patterns and product logic were synthesized into one path from a first intention to sustained progress",
+      "a goal-setting product explored from research to a working interface model — i studied academic sources alongside market and product patterns, then translated the findings into workstreams, feature priorities, a design system and core screens",
     cover: {
       src: "/assets/projects/research-platform/xx_1.png",
       alt: "research platform overview"
@@ -289,9 +289,9 @@ export const projects: Project[] = [
   {
     slug: "internet-computer",
     title: "internet computer",
-    services: "lead design at clay",
+    services: "web design & motion",
     summary:
-      "internet computer is a decentralized network for running applications, websites and services as canisters — the site turns its protocol, infrastructure and network economy into one continuous visual story",
+      "digital launch work for a blockchain protocol with a developer audience — at clay, i contributed to several launches and two website directions, using interface design, motion and narrative to make technical concepts easier to understand",
     cover: {
       src: "/assets/projects/internet-computer/ic_1.png",
       alt: "internet computer website"
@@ -362,7 +362,26 @@ export const projects: Project[] = [
   }
 ];
 
-export const homeCards: HomeProjectCard[] = [
+const projectOrder = [
+  "football-federation",
+  "research-platform",
+  "content-platform-experiments",
+  "sheremetyevo-international-airport",
+  "internet-computer",
+  "breaking"
+] as const;
+
+export const projects: Project[] = projectOrder.map((slug) => {
+  const project = projectDefinitions.find((candidate) => candidate.slug === slug);
+
+  if (!project) {
+    throw new Error(`missing project definition for ${slug}`);
+  }
+
+  return project;
+});
+
+const homeCardDefinitions: HomeProjectCard[] = [
   {
     id: "content-platform-experiments",
     projectSlug: "content-platform-experiments",
@@ -400,3 +419,13 @@ export const homeCards: HomeProjectCard[] = [
     mediaStatus: "ready"
   }
 ];
+
+export const homeCards: HomeProjectCard[] = projectOrder.map((projectSlug) => {
+  const card = homeCardDefinitions.find((candidate) => candidate.projectSlug === projectSlug);
+
+  if (!card) {
+    throw new Error(`missing home card for ${projectSlug}`);
+  }
+
+  return card;
+});

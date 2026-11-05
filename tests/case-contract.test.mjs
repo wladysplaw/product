@@ -60,7 +60,7 @@ test("built football-federation case puts specific federation workflows before e
 
   assert.equal((html.match(/data-testid="case-story"/g) ?? []).length, 4, "the football-federation case must expose all four story blocks");
   assert.equal((html.match(/>text placeholder</g) ?? []).length, 0, "the football-federation case must not expose generic copy placeholders");
-  assert.match(html, /federation management portal/, "the case must explain the federation-level operating model");
+  assert.match(html, /management platform for a football federation/, "the case must explain the federation-level operating model");
   assert.match(html, /structured view of every club/, "the first screen must describe the club data view");
   assert.match(html, /tournament application view/, "the second screen must describe the tournament application data view");
   assert.match(html, /club creation flow/, "the third screen must describe club creation");
@@ -72,7 +72,7 @@ test("built sheremetyevo case puts the airport ecosystem and map stories before 
 
   assert.equal((html.match(/data-testid="case-story"/g) ?? []).length, 8, "the sheremetyevo case must expose all eight story blocks");
   assert.equal((html.match(/>text placeholder</g) ?? []).length, 0, "the sheremetyevo case must not expose generic copy placeholders");
-  assert.match(html, /connected airport product ecosystem/, "the case must explain the wider product ecosystem");
+  assert.match(html, /multi-device passenger-service ecosystem/, "the case must explain the wider product ecosystem");
   assert.match(html, /three languages and a high-contrast version/, "the first screen must explain multilingual accessibility");
   assert.match(html, /changing background video/, "the homepage must explain its responsive video treatment");
   assert.match(html, /flight board tabs behave like large headlines/, "the flight-board screen must explain its tab navigation");
@@ -120,7 +120,7 @@ test("built internet-computer case explains the network through five distinct vi
 
   assert.equal((html.match(/data-testid="case-story"/g) ?? []).length, 5, "the internet computer case must expose all five supplied story blocks");
   assert.equal((html.match(/>text placeholder</g) ?? []).length, 0, "the internet computer case must not expose generic copy placeholders");
-  assert.match(html, /decentralized network for running applications, websites and services as canisters/, "the case must identify what internet computer is");
+  assert.match(html, /digital launch work for a blockchain protocol with a developer audience/, "the case must identify the project context");
   assert.match(html, /3d scene created by a collaborating artist/, "the opening must credit the supplied 3d scene correctly");
   assert.match(html, /detailed animated field of blocks/, "the second panel must explain its animated network model");
   assert.match(html, /horizontally scrolling panels/, "the third panel must explain the long-page interaction model");
