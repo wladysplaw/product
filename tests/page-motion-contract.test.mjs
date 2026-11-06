@@ -135,6 +135,17 @@ test("keeps automatic case input blocked through the route shutter", () => {
   assert.match(ready, /scheduleAutoAdvanceRelease\(\)/, "the quiet input window may begin only after the shutter finishes");
 });
 
+test("releases automatic case input after a fixed post-transition guard", () => {
+  const controller = readFileSync(controllerPath, "utf8");
+  const noteInput = controller.match(/const noteAutoAdvanceInput = \(\) => \{([\s\S]*?)\n  \};\n\n  const markAutoAdvanceRouteReady/)?.[1] ?? "";
+  const ready = controller.match(/const markAutoAdvanceRouteReady = \(\) => \{([\s\S]*?)\n  \};\n\n  const handleAutoAdvanceStart/)?.[1] ?? "";
+
+  assert.match(noteInput, /autoAdvanceRouteReady/, "residual wheel input must not extend the guard after the incoming route is ready");
+  assert.doesNotMatch(noteInput, /scheduleAutoAdvanceRelease\(\)/, "input must not reschedule the fixed post-transition guard");
+  assert.match(ready, /autoAdvanceRouteReadyAt = performance\.now\(\);/, "the fixed guard must begin when the route is ready");
+  assert.match(ready, /scheduleAutoAdvanceRelease\(\);/, "the lock must schedule its own release once the transition has finished");
+});
+
 test("uses a vertical full-page handoff only for automatic case advance", () => {
   const controller = readFileSync(controllerPath, "utf8");
   const styles = readFileSync(stylesPath, "utf8");

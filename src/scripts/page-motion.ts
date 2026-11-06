@@ -57,6 +57,7 @@ export function startPageMotion(): PageCleanup {
   let disposed = false;
   let autoAdvanceResumeTimer = 0;
   let autoAdvanceRouteReady = false;
+  let autoAdvanceRouteReadyAt = 0;
   let pendingAutoAdvance = false;
   let routePresentation: RouteTransitionPresentation = resolveRouteTransitionPresentation({
     autoAdvance: false,
@@ -105,6 +106,7 @@ export function startPageMotion(): PageCleanup {
     clearAutoAdvanceResumeTimer();
     autoAdvanceInputLock.release();
     autoAdvanceRouteReady = false;
+    autoAdvanceRouteReadyAt = 0;
     if (!routeScrollLockId) lenis?.start();
   };
 
@@ -125,26 +127,30 @@ export function startPageMotion(): PageCleanup {
 
     if (!autoAdvanceInputLock.isHeld() || !autoAdvanceRouteReady) return;
 
-    if (autoAdvanceInputLock.canRelease(performance.now())) {
+    const elapsed = performance.now() - autoAdvanceRouteReadyAt;
+    if (elapsed >= AUTO_ADVANCE_INPUT_QUIET_WINDOW) {
       releaseAutoAdvanceInput();
       return;
     }
 
-    autoAdvanceResumeTimer = window.setTimeout(scheduleAutoAdvanceRelease, AUTO_ADVANCE_INPUT_QUIET_WINDOW);
+    autoAdvanceResumeTimer = window.setTimeout(
+      scheduleAutoAdvanceRelease,
+      AUTO_ADVANCE_INPUT_QUIET_WINDOW - elapsed
+    );
   };
 
   const holdAutoAdvanceInput = () => {
     clearAutoAdvanceResumeTimer();
     autoAdvanceRouteReady = false;
+    autoAdvanceRouteReadyAt = 0;
     autoAdvanceInputLock.lock(performance.now());
     lenis?.stop();
   };
 
   const noteAutoAdvanceInput = () => {
-    if (!autoAdvanceInputLock.isHeld()) return;
+    if (!autoAdvanceInputLock.isHeld() || autoAdvanceRouteReady) return;
 
     autoAdvanceInputLock.noteInput(performance.now());
-    scheduleAutoAdvanceRelease();
   };
 
   const markAutoAdvanceRouteReady = () => {
@@ -155,6 +161,7 @@ export function startPageMotion(): PageCleanup {
       if (autoAdvanceRouteId !== currentRouteId || !autoAdvanceInputLock.isHeld()) return;
 
       autoAdvanceRouteReady = true;
+      autoAdvanceRouteReadyAt = performance.now();
       scheduleAutoAdvanceRelease();
     };
 
