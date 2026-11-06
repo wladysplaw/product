@@ -199,12 +199,13 @@ test("publishes each visible home card as its own project route", () => {
 });
 
 test("keeps direct-only cases routeable without adding them to the home grid", () => {
-  const directSlugs = ["greeno", "motif-network", "polee", "cdms", "knowfid", "fetch-fab"];
+  const directSlugs = ["polee", "greeno", "motif-network", "cdms", "knowfid", "fetch-fab"];
 
   assert.deepEqual(
     directProjects.map(({ slug }) => slug),
     directSlugs
   );
+  assert.equal(directProjects.find(({ slug }) => slug === "cdms")?.title, "cdmsm");
   assert.deepEqual(
     getProjectPaths(allProjects),
     [

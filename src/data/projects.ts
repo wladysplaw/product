@@ -530,7 +530,7 @@ const directProjectDefinitions: Project[] = [
   },
   {
     slug: "cdms",
-    title: "cdms",
+    title: "cdmsm",
     services: "brand identity, web design",
     summary:
       "an identity and content system for a polish school of thought, taste and speech — the design creates a shared editorial language for learning, culture and personal expression",
@@ -654,7 +654,7 @@ export const projects: Project[] = projectOrder.map((slug) => {
   return project;
 });
 
-const directProjectOrder = ["greeno", "motif-network", "polee", "cdms", "knowfid", "fetch-fab"] as const;
+const directProjectOrder = ["polee", "greeno", "motif-network", "cdms", "knowfid", "fetch-fab"] as const;
 
 export const directProjects: Project[] = directProjectOrder.map((slug) => {
   const project = directProjectDefinitions.find((candidate) => candidate.slug === slug);
