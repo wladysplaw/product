@@ -363,9 +363,9 @@ const projectDefinitions: Project[] = [
 ];
 
 const projectOrder = [
+  "content-platform-experiments",
   "football-federation",
   "research-platform",
-  "content-platform-experiments",
   "sheremetyevo-international-airport",
   "internet-computer",
   "breaking"

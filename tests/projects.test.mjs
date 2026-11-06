@@ -39,18 +39,18 @@ test("publishes each visible home card as its own project route", () => {
   assert.deepEqual(
     projects.map(({ slug }) => slug),
     [
+      "content-platform-experiments",
       "football-federation",
       "research-platform",
-      "content-platform-experiments",
       "sheremetyevo-international-airport",
       "internet-computer",
       "breaking"
     ]
   );
   assert.deepEqual(getProjectPaths(projects), [
+    { params: { slug: "content-platform-experiments" } },
     { params: { slug: "football-federation" } },
     { params: { slug: "research-platform" } },
-    { params: { slug: "content-platform-experiments" } },
     { params: { slug: "sheremetyevo-international-airport" } },
     { params: { slug: "internet-computer" } },
     { params: { slug: "breaking" } }
@@ -58,9 +58,9 @@ test("publishes each visible home card as its own project route", () => {
   assert.deepEqual(
     homeCards.map(({ projectSlug }) => projectSlug),
     [
+      "content-platform-experiments",
       "football-federation",
       "research-platform",
-      "content-platform-experiments",
       "sheremetyevo-international-airport",
       "internet-computer",
       "breaking"
@@ -94,6 +94,12 @@ test("publishes each visible home card as its own project route", () => {
     projects.slice(0, 5).map(({ slug, services, summary }) => ({ slug, services, summary })),
     [
       {
+        slug: "content-platform-experiments",
+        services: "product strategy & ux/ui",
+        summary:
+          "a series of product experiments around social content and creator monetisation — i developed hypotheses, user flows and interface concepts around discovery, paid posts, subscriptions, paywalls and settlement"
+      },
+      {
         slug: "football-federation",
         services: "product direction & ux/ui",
         summary:
@@ -104,12 +110,6 @@ test("publishes each visible home card as its own project route", () => {
         services: "research & product design",
         summary:
           "a goal-setting product explored from research to a working interface model — i studied academic sources alongside market and product patterns, then translated the findings into workstreams, feature priorities, a design system and core screens"
-      },
-      {
-        slug: "content-platform-experiments",
-        services: "product strategy & ux/ui",
-        summary:
-          "a series of product experiments around social content and creator monetisation — i developed hypotheses, user flows and interface concepts around discovery, paid posts, subscriptions, paywalls and settlement"
       },
       {
         slug: "sheremetyevo-international-airport",
