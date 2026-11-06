@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { homeCards, projects } from "../src/data/projects.ts";
+import { allProjects, directProjects, homeCards, projects } from "../src/data/projects.ts";
 import { getProjectBySlug, getProjectNeighbors, getProjectPaths } from "../src/lib/projects.ts";
 
 const fixture = [
@@ -196,4 +196,39 @@ test("publishes each visible home card as its own project route", () => {
       .every(({ blocks }) => blocks.every(({ body, mediaStatus }) => body === "text placeholder" && mediaStatus === "ready")),
     "unfinished project cases must retain their requested placeholder copy"
   );
+});
+
+test("keeps direct-only cases routeable without adding them to the home grid", () => {
+  const directSlugs = ["greeno", "motif-network", "polee", "cdms", "knowfid", "fetch-fab"];
+
+  assert.deepEqual(
+    directProjects.map(({ slug }) => slug),
+    directSlugs
+  );
+  assert.deepEqual(
+    getProjectPaths(allProjects),
+    [
+      ...getProjectPaths(projects),
+      ...directSlugs.map((slug) => ({ params: { slug } }))
+    ]
+  );
+  assert.ok(
+    directProjects.every(({ blocks }) => blocks.length > 0 && blocks.every(({ body, mediaStatus }) => body !== "text placeholder" && mediaStatus === "ready")),
+    "every direct-only case must keep authored copy directly before each supplied image"
+  );
+  assert.ok(
+    directProjects.flatMap(({ services, summary, blocks }) => [services, summary, ...blocks.map(({ body }) => body)]).every(
+      (copy) => copy === copy.toLowerCase() && !copy.includes(".")
+    ),
+    "direct-only case copy must use lowercase sentences separated without full stops"
+  );
+  assert.deepEqual(
+    homeCards.map(({ projectSlug }) => projectSlug),
+    projects.map(({ slug }) => slug),
+    "the homepage must retain only the current main-case sequence"
+  );
+  assert.deepEqual(getProjectNeighbors("fetch-fab", directProjects), {
+    previous: directProjects[4],
+    next: directProjects[0]
+  });
 });

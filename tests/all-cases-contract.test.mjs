@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
-import { projects } from "../src/data/projects.ts";
+import { allProjects, directProjects, projects } from "../src/data/projects.ts";
 
 const testDirectory = path.dirname(fileURLToPath(import.meta.url));
 
@@ -24,8 +24,8 @@ test("content-platform home and case use the supplied replacement first screen",
   );
 });
 
-test("every home project builds a case with copy and local media for every story", () => {
-  for (const project of projects) {
+test("every project builds a case with copy and local media for every story", () => {
+  for (const project of allProjects) {
     const builtCase = path.resolve(testDirectory, `../dist/projects/${project.slug}/index.html`);
     const html = readFileSync(builtCase, "utf8");
 
@@ -69,5 +69,23 @@ test("the final case loops its top and footer next links back to the first proje
     (html.match(new RegExp(`href="${firstHref}"`, "g")) ?? []).length,
     2,
     "the final case must expose the first project through both its fixed and footer next links"
+  );
+});
+
+test("the final direct-only case loops its top and footer next links back to the first direct-only case", () => {
+  const firstProject = directProjects[0];
+  const finalProject = directProjects.at(-1);
+
+  assert.ok(firstProject, "the direct-only sequence must have a first destination");
+  assert.ok(finalProject, "the direct-only sequence must have a final destination");
+
+  const builtFinalCase = path.resolve(testDirectory, `../dist/projects/${finalProject.slug}/index.html`);
+  const html = readFileSync(builtFinalCase, "utf8");
+  const firstHref = `/product/projects/${firstProject.slug}/`;
+
+  assert.equal(
+    (html.match(new RegExp(`href="${firstHref}"`, "g")) ?? []).length,
+    2,
+    "the final direct-only case must expose the first direct-only project through both its fixed and footer next links"
   );
 });

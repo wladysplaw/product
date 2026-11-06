@@ -1,14 +1,14 @@
 ---
 import ProjectDetail from "../../components/ProjectDetail.astro";
-import { projects } from "../../data/projects";
+import { allProjects, directProjects, projects } from "../../data/projects";
 import { getProjectBySlug, getProjectNeighbors, getProjectPaths } from "../../lib/projects";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 
 export function getStaticPaths() {
-  return getProjectPaths(projects);
+  return getProjectPaths(allProjects);
 }
 
-const project = getProjectBySlug(Astro.params.slug ?? "", projects);
+const project = getProjectBySlug(Astro.params.slug ?? "", allProjects);
 
 if (!project) {
   throw new Error("Project route rendered without a project record.");
@@ -16,5 +16,11 @@ if (!project) {
 ---
 
 <BaseLayout title={project.title} description={project.summary}>
-  <ProjectDetail project={project} neighbors={getProjectNeighbors(project.slug, projects)} />
+  <ProjectDetail
+    project={project}
+    neighbors={getProjectNeighbors(
+      project.slug,
+      directProjects.some(({ slug }) => slug === project.slug) ? directProjects : projects
+    )}
+  />
 </BaseLayout>

@@ -362,6 +362,279 @@ const projectDefinitions: Project[] = [
   }
 ];
 
+const directProjectDefinitions: Project[] = [
+  {
+    slug: "greeno",
+    title: "greeno",
+    services: "brand identity, packaging, digital experience",
+    summary:
+      "a multicultural brand for smart healthy-food terminals in dubai — the system connects meal choice, terminal interaction and transparent packaging in one recognisable everyday service",
+    cover: {
+      src: "/assets/projects/greeno/gr_01.png",
+      alt: "greeno identity"
+    },
+    blocks: [
+      {
+        body:
+          "the greeno mark is designed to travel across languages and food cultures — its flexible forms and language variants give people a familiar point of entry before they choose a meal",
+        media: { src: "/assets/projects/greeno/gr_01.png", alt: "greeno identity" },
+        mediaStatus: "ready"
+      },
+      {
+        body:
+          "the terminal introduces the service as a changing collection of healthy dishes — an editorial interface makes cultural variety, ingredients and daily choice feel simple to navigate",
+        media: { src: "/assets/projects/greeno/gr_02.png", alt: "greeno terminal experience" },
+        mediaStatus: "ready"
+      },
+      {
+        body:
+          "transparent food packs keep the meal itself visible — a sticker-based graphic layer carries the brand while each dish remains specific and easy to recognise",
+        media: { src: "/assets/projects/greeno/gr_03.png", alt: "greeno transparent food packaging" },
+        mediaStatus: "ready"
+      },
+      {
+        body:
+          "the label system adapts to different cuisines, formats and languages — each package can change without losing its place in the larger greeno world",
+        media: { src: "/assets/projects/greeno/gr_04.png", alt: "greeno packaging label system" },
+        mediaStatus: "ready"
+      },
+      {
+        body:
+          "across screen, terminal and packaging, the system turns a practical vending service into a consistent food experience — every touchpoint speaks the same visual language",
+        media: { src: "/assets/projects/greeno/gr_05.png", alt: "greeno brand applications" },
+        mediaStatus: "ready"
+      }
+    ]
+  },
+  {
+    slug: "motif-network",
+    title: "motif.network",
+    services: "brand identity, product design, visual programming",
+    summary:
+      "a risk-scoring product for crypto wallets and counterparties — transaction history, connected addresses and custom rules turn an opaque chain into a clearer decision",
+    cover: {
+      src: "/assets/projects/motif-network/mn_01.png",
+      alt: "motif.network identity"
+    },
+    blocks: [
+      {
+        body:
+          "the identity turns a blockchain into a readable signal — linked forms and a central spark express the moment when an opaque trail becomes easier to understand",
+        media: { src: "/assets/projects/motif-network/mn_01.png", alt: "motif.network identity" },
+        mediaStatus: "ready"
+      },
+      {
+        body:
+          "a wallet score begins with the relationships behind an address — transactions, counterparties and behavioural signals form a chain that can be inspected instead of taken on faith",
+        media: { src: "/assets/projects/motif-network/mn_02.png", alt: "motif.network wallet scoring overview" },
+        mediaStatus: "ready"
+      },
+      {
+        body:
+          "the scoring logic can be assembled visually — connected nodes let teams define signals, thresholds and rules without losing the structure of the underlying model",
+        media: { src: "/assets/projects/motif-network/mn_03.png", alt: "motif.network visual score builder" },
+        mediaStatus: "ready"
+      },
+      {
+        body:
+          "the same scoring system is available in code — technical teams can inspect and implement the logic in the form that fits their workflow",
+        media: { src: "/assets/projects/motif-network/mn_04.png", alt: "motif.network scoring code" },
+        mediaStatus: "ready"
+      }
+    ]
+  },
+  {
+    slug: "polee",
+    title: "polee",
+    services: "brand identity, communication, product design",
+    summary:
+      "a brand and product system for a creator-led content platform — a pass-shaped identity opens a broader world of authors, formats and paid access",
+    cover: {
+      src: "/assets/projects/polee/po_01.png",
+      alt: "polee identity"
+    },
+    blocks: [
+      {
+        body:
+          "the polee mark begins as a pass into a changing content space — the opening in the letterform makes access and discovery part of the identity itself",
+        media: { src: "/assets/projects/polee/po_01.png", alt: "polee identity" },
+        mediaStatus: "ready"
+      },
+      {
+        body:
+          "the first brand application turns that idea into a layered visual scene — the sign stays familiar while the content behind it can keep changing",
+        media: { src: "/assets/projects/polee/po_02.png", alt: "polee layered brand scene" },
+        mediaStatus: "ready"
+      },
+      {
+        body:
+          "the identity expands into a system for different content worlds — its frame becomes a way to introduce authors, formats and new points of view",
+        media: { src: "/assets/projects/polee/po_03.png", alt: "polee content identity system" },
+        mediaStatus: "ready"
+      },
+      {
+        body:
+          "key visuals place creative authors at the centre — bold crops, objects and gestures give each creator a distinct presence without fragmenting the wider brand",
+        media: { src: "/assets/projects/polee/po_04.png", alt: "polee creative author key visual" },
+        mediaStatus: "ready"
+      },
+      {
+        body:
+          "a second visual direction tests how the system can move between image-led and editorial communication — the platform feels broad enough for many kinds of creative work",
+        media: { src: "/assets/projects/polee/po_05.png", alt: "polee editorial visual direction" },
+        mediaStatus: "ready"
+      },
+      {
+        body:
+          "typographic communication turns the platform promise into short, direct statements — the identity works even when content is reduced to a line of text",
+        media: { src: "/assets/projects/polee/po_06.png", alt: "polee typographic communication" },
+        mediaStatus: "ready"
+      },
+      {
+        body:
+          "large-format messages add another register to the brand — simple language and strong composition make creative ambition feel public and approachable",
+        media: { src: "/assets/projects/polee/po_07.png", alt: "polee large-format communication" },
+        mediaStatus: "ready"
+      },
+      {
+        body:
+          "short-form social content gives the system a faster rhythm — reels, posts and recurring formats keep authors visible between larger releases",
+        media: { src: "/assets/projects/polee/po_08.png", alt: "polee social content" },
+        mediaStatus: "ready"
+      },
+      {
+        body:
+          "a playful campaign image shows how the platform can hold unexpected scenes — the idea of content remains open rather than tied to one category",
+        media: { src: "/assets/projects/polee/po_09.png", alt: "polee campaign image" },
+        mediaStatus: "ready"
+      },
+      {
+        body:
+          "the product feed brings different formats into one browsing space — cards, posts and visual signals help people move from discovery towards the work itself",
+        media: { src: "/assets/projects/polee/po_10.png", alt: "polee product feed" },
+        mediaStatus: "ready"
+      },
+      {
+        body:
+          "an author page gives each creator a recognisable home — profile, work and paid access are arranged as one continuous personal space",
+        media: { src: "/assets/projects/polee/po_11.png", alt: "polee author page" },
+        mediaStatus: "ready"
+      },
+      {
+        body:
+          "an expanded cover turns the author page into a stronger editorial moment — visual identity, profile context and the content world meet before the feed begins",
+        media: { src: "/assets/projects/polee/po_12.png", alt: "polee expanded author cover" },
+        mediaStatus: "ready"
+      }
+    ]
+  },
+  {
+    slug: "cdms",
+    title: "cdms",
+    services: "brand identity, web design",
+    summary:
+      "an identity and content system for a polish school of thought, taste and speech — the design creates a shared editorial language for learning, culture and personal expression",
+    cover: {
+      src: "/assets/projects/cdms/um_01.png",
+      alt: "cdms identity"
+    },
+    blocks: [
+      {
+        body:
+          "the cdms identity gives the school’s long name a compact visual anchor — the mark and the statement about thought, taste and speech work as one cultural signature",
+        media: { src: "/assets/projects/cdms/um_01.png", alt: "cdms identity" },
+        mediaStatus: "ready"
+      },
+      {
+        body:
+          "the website treats learning material as an editorial catalogue — subjects and formats stay easy to browse without losing their individual tone",
+        media: { src: "/assets/projects/cdms/um_02.png", alt: "cdms content catalogue" },
+        mediaStatus: "ready"
+      },
+      {
+        body:
+          "a cover system lets every piece of content join the same visual language — typography, colour and the logo shift together to make the collection feel related",
+        media: { src: "/assets/projects/cdms/um_03.png", alt: "cdms content covers" },
+        mediaStatus: "ready"
+      }
+    ]
+  },
+  {
+    slug: "knowfid",
+    title: "knowfid",
+    services: "visual identity, product concept",
+    summary:
+      "a visual concept for facial kyc — identity verification is treated as a clear exchange of recognition, confidence and next action",
+    cover: {
+      src: "/assets/projects/knowfid/kn_01.png",
+      alt: "knowfid identity"
+    },
+    blocks: [
+      {
+        body:
+          "the mark frames a face as a signal being recognised — a detector-like form makes the core verification action visible at a glance",
+        media: { src: "/assets/projects/knowfid/kn_01.png", alt: "knowfid identity" },
+        mediaStatus: "ready"
+      },
+      {
+        body:
+          "colour, contrast and rounded fields turn identity checks into a calmer product language — the interface feels direct without making the underlying process look opaque",
+        media: { src: "/assets/projects/knowfid/kn_02.png", alt: "knowfid visual system" },
+        mediaStatus: "ready"
+      },
+      {
+        body:
+          "large blocks and short messages keep the important states immediately legible — recognition, confidence and next actions become the main visual content",
+        media: { src: "/assets/projects/knowfid/kn_03.png", alt: "knowfid interface message system" },
+        mediaStatus: "ready"
+      },
+      {
+        body:
+          "the concept explores a flexible system rather than one fixed screen — key messages, fields and colour states can shift while the identity stays recognisable",
+        media: { src: "/assets/projects/knowfid/kn_04.png", alt: "knowfid concept applications" },
+        mediaStatus: "ready"
+      }
+    ]
+  },
+  {
+    slug: "fetch-fab",
+    title: "fetch fab",
+    services: "creative direction, visual identity, digital experience",
+    summary:
+      "a concept for a programme that trains people to challenge habitual thinking — the visual language treats thoughts as forms that can be disrupted, reframed and rebuilt",
+    cover: {
+      src: "/assets/projects/fetch-fab/fm_01.png",
+      alt: "fetch fab identity"
+    },
+    blocks: [
+      {
+        body:
+          "the fetch fab mark begins with a familiar signal and fractures it into a new shape — the identity makes a change in thinking visible before any explanation appears",
+        media: { src: "/assets/projects/fetch-fab/fm_01.png", alt: "fetch fab identity" },
+        mediaStatus: "ready"
+      },
+      {
+        body:
+          "the site frames complex problems as material for transformation — distorted forms and direct language encourage people to challenge the path their thinking usually takes",
+        media: { src: "/assets/projects/fetch-fab/fm_02.png", alt: "fetch fab thinking programme website" },
+        mediaStatus: "ready"
+      },
+      {
+        body:
+          "visual experiments turn mental friction into an expressive system — stretched, broken and recombined shapes suggest that new answers can start with a changed point of view",
+        media: { src: "/assets/projects/fetch-fab/fm_03.png", alt: "fetch fab visual experiment" },
+        mediaStatus: "ready"
+      },
+      {
+        body:
+          "the final composition brings the idea into a single invitation — distort your thinking, then use the new shape to approach what once felt unsolvable",
+        media: { src: "/assets/projects/fetch-fab/fm_04.png", alt: "fetch fab invitation" },
+        mediaStatus: "ready"
+      }
+    ]
+  }
+];
+
 const projectOrder = [
   "content-platform-experiments",
   "football-federation",
@@ -380,6 +653,20 @@ export const projects: Project[] = projectOrder.map((slug) => {
 
   return project;
 });
+
+const directProjectOrder = ["greeno", "motif-network", "polee", "cdms", "knowfid", "fetch-fab"] as const;
+
+export const directProjects: Project[] = directProjectOrder.map((slug) => {
+  const project = directProjectDefinitions.find((candidate) => candidate.slug === slug);
+
+  if (!project) {
+    throw new Error(`missing direct project definition for ${slug}`);
+  }
+
+  return project;
+});
+
+export const allProjects: Project[] = [...projects, ...directProjects];
 
 const homeCardDefinitions: HomeProjectCard[] = [
   {
