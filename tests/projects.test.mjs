@@ -41,18 +41,18 @@ test("publishes each visible home card as its own project route", () => {
     [
       "content-platform-experiments",
       "football-federation",
-      "research-platform",
-      "sheremetyevo-international-airport",
       "internet-computer",
+      "sheremetyevo-international-airport",
+      "research-platform",
       "breaking"
     ]
   );
   assert.deepEqual(getProjectPaths(projects), [
     { params: { slug: "content-platform-experiments" } },
     { params: { slug: "football-federation" } },
-    { params: { slug: "research-platform" } },
-    { params: { slug: "sheremetyevo-international-airport" } },
     { params: { slug: "internet-computer" } },
+    { params: { slug: "sheremetyevo-international-airport" } },
+    { params: { slug: "research-platform" } },
     { params: { slug: "breaking" } }
   ]);
   assert.deepEqual(
@@ -60,9 +60,9 @@ test("publishes each visible home card as its own project route", () => {
     [
       "content-platform-experiments",
       "football-federation",
-      "research-platform",
-      "sheremetyevo-international-airport",
       "internet-computer",
+      "sheremetyevo-international-airport",
+      "research-platform",
       "breaking"
     ]
   );
@@ -106,10 +106,10 @@ test("publishes each visible home card as its own project route", () => {
           "a management platform for a football federation, bringing clubs, tournaments, matches, players, coaches and staff into one working environment — i led product and design direction, shaped key decisions and guided the team through the ux/ui design of core management workflows"
       },
       {
-        slug: "research-platform",
-        services: "research & product design",
+        slug: "internet-computer",
+        services: "web design & motion",
         summary:
-          "a goal-setting product explored from research to a working interface model — i studied academic sources alongside market and product patterns, then translated the findings into workstreams, feature priorities, a design system and core screens"
+          "digital launch work for a blockchain protocol with a developer audience — at clay, i contributed to several launches and two website directions, using interface design, motion and narrative to make technical concepts easier to understand"
       },
       {
         slug: "sheremetyevo-international-airport",
@@ -118,10 +118,10 @@ test("publishes each visible home card as its own project route", () => {
           "a multi-device passenger-service ecosystem spanning the website, mobile app, wearable app and airport terminals — i designed the service experience and visual system across these touchpoints"
       },
       {
-        slug: "internet-computer",
-        services: "web design & motion",
+        slug: "research-platform",
+        services: "research & product design",
         summary:
-          "digital launch work for a blockchain protocol with a developer audience — at clay, i contributed to several launches and two website directions, using interface design, motion and narrative to make technical concepts easier to understand"
+          "a goal-setting product explored from research to a working interface model — i studied academic sources alongside market and product patterns, then translated the findings into workstreams, feature priorities, a design system and core screens"
       }
     ]
   );

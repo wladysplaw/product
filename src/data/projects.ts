@@ -638,9 +638,9 @@ const directProjectDefinitions: Project[] = [
 const projectOrder = [
   "content-platform-experiments",
   "football-federation",
-  "research-platform",
-  "sheremetyevo-international-airport",
   "internet-computer",
+  "sheremetyevo-international-airport",
+  "research-platform",
   "breaking"
 ] as const;
 
