@@ -4,11 +4,13 @@ import FooterMarks from "./FooterMarks.astro";
 
 interface Props {
   next: Project | undefined;
+  routePrefix?: string;
 }
 
-const { next } = Astro.props;
+const { next, routePrefix = "projects" } = Astro.props;
 const basePath = import.meta.env.BASE_URL;
-const nextHref = next ? `${basePath}projects/${next.slug}/` : null;
+const routeBase = routePrefix ? `${routePrefix}/` : "";
+const nextHref = next ? `${basePath}${routeBase}${next.slug}/` : null;
 ---
 
 {

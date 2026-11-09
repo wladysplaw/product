@@ -6,11 +6,13 @@ import CaseFooter from "./CaseFooter.astro";
 interface Props {
   project: Project;
   neighbors: ProjectNeighbors;
+  routePrefix?: string;
 }
 
-const { project, neighbors } = Astro.props;
+const { project, neighbors, routePrefix = "projects" } = Astro.props;
 const basePath = import.meta.env.BASE_URL;
-const nextHref = neighbors.next ? `${basePath}projects/${neighbors.next.slug}/` : null;
+const routeBase = routePrefix ? `${routePrefix}/` : "";
+const nextHref = neighbors.next ? `${basePath}${routeBase}${neighbors.next.slug}/` : null;
 const [firstBlock, ...remainingBlocks] = project.blocks;
 ---
 
@@ -75,4 +77,4 @@ const [firstBlock, ...remainingBlocks] = project.blocks;
     </div>
   </article>
 </main>
-<CaseFooter next={neighbors.next} />
+<CaseFooter next={neighbors.next} routePrefix={routePrefix} />

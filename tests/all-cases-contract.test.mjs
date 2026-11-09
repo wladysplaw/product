@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
@@ -52,6 +52,29 @@ test("every project builds a case with copy and local media for every story", ()
       );
     }
   }
+});
+
+test("direct-only cases build at their promised flat URLs", () => {
+  for (const project of directProjects) {
+    const builtCase = path.resolve(testDirectory, `../dist/${project.slug}/index.html`);
+
+    assert.equal(
+      existsSync(builtCase),
+      true,
+      `${project.slug} must be reachable at /product/${project.slug}/ as well as its legacy nested URL`
+    );
+  }
+
+  const firstProject = directProjects[0];
+  const finalProject = directProjects.at(-1);
+  const finalHtml = readFileSync(path.resolve(testDirectory, `../dist/${finalProject.slug}/index.html`), "utf8");
+  const firstHref = `/product/${firstProject.slug}/`;
+
+  assert.equal(
+    (finalHtml.match(new RegExp(`href="${firstHref}"`, "g")) ?? []).length,
+    2,
+    "flat direct-only routes must keep their top and footer next links on the flat URL scheme"
+  );
 });
 
 test("the final case loops its top and footer next links back to the first project", () => {
