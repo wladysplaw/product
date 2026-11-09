@@ -77,6 +77,27 @@ test("direct-only cases build at their promised flat URLs", () => {
   );
 });
 
+test("direct cases reserve their media geometry and defer offscreen image work", () => {
+  for (const project of directProjects) {
+    const builtCase = path.resolve(testDirectory, `../dist/${project.slug}/index.html`);
+    const html = readFileSync(builtCase, "utf8");
+    const main = html.slice(html.indexOf("<main"), html.indexOf("</main>") + "</main>".length);
+    const images = [...main.matchAll(/<img\s+[^>]*>/g)].map(([tag]) => tag);
+
+    assert.equal(images.length, project.blocks.length, `${project.slug} must expose one image per story`);
+
+    images.forEach((image, index) => {
+      assert.match(image, /\bwidth="\d+"/, `${project.slug} image ${index + 1} must reserve its width before decoding`);
+      assert.match(image, /\bheight="\d+"/, `${project.slug} image ${index + 1} must reserve its height before decoding`);
+      assert.match(image, /\bdecoding="async"/, `${project.slug} image ${index + 1} must not block the scroll animation while decoding`);
+
+      if (index > 0) {
+        assert.match(image, /\bloading="lazy"/, `${project.slug} continuation image ${index + 1} must not compete with the first viewport`);
+      }
+    });
+  }
+});
+
 test("the final case loops its top and footer next links back to the first project", () => {
   const firstProject = projects[0];
   const finalProject = projects.at(-1);

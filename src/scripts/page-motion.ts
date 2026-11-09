@@ -239,6 +239,33 @@ export function startPageMotion(): PageCleanup {
         scrollReveal.dataset.motionHoverReady = "true";
       }
     };
+    const waitForCaseMediaDecode = (scrollReveal: HTMLElement): Promise<void> => {
+      const image = scrollReveal.querySelector<HTMLImageElement>("img");
+      if (!image) return Promise.resolve();
+
+      const decode = () => {
+        if (typeof image.decode !== "function") return Promise.resolve();
+
+        try {
+          return image.decode().catch(() => undefined);
+        } catch {
+          return Promise.resolve();
+        }
+      };
+
+      if (image.complete) return decode();
+
+      return new Promise((resolve) => {
+        const settle = () => {
+          image.removeEventListener("load", settle);
+          image.removeEventListener("error", settle);
+          void decode().then(resolve);
+        };
+
+        image.addEventListener("load", settle, { once: true });
+        image.addEventListener("error", settle, { once: true });
+      });
+    };
     const unlockHomeCardHover = (event: AnimationEvent) => {
       if (event.animationName !== "editorial-card-media-reveal") return;
       if (!(event.currentTarget instanceof HTMLElement)) return;
@@ -252,6 +279,7 @@ export function startPageMotion(): PageCleanup {
     }
 
     try {
+      let unmounted = false;
       homeCards.forEach((homeCard) => homeCard.addEventListener("animationend", unlockHomeCardHover));
 
       const observer = new IntersectionObserver(
@@ -260,8 +288,17 @@ export function startPageMotion(): PageCleanup {
             if (!entry.isIntersecting) return;
 
             const scrollReveal = entry.target as HTMLElement;
-            reveal(scrollReveal);
             observer.unobserve(scrollReveal);
+
+            if (scrollReveal.dataset.motionReveal === "case-continuation") {
+              void waitForCaseMediaDecode(scrollReveal).then(() => {
+                if (unmounted || !scrollReveal.isConnected) return;
+                reveal(scrollReveal);
+              });
+              return;
+            }
+
+            reveal(scrollReveal);
           });
         },
         { rootMargin: "0px 0px -5% 0px", threshold: 0.14 }
@@ -275,6 +312,7 @@ export function startPageMotion(): PageCleanup {
       root.dataset.pageMotionScrollReveals = "enhanced";
 
       return () => {
+        unmounted = true;
         observer.disconnect();
         homeCards.forEach((homeCard) => homeCard.removeEventListener("animationend", unlockHomeCardHover));
         reset();

@@ -239,6 +239,10 @@ test("defers continuation stories and home cards until they enter the viewport",
   assert.match(controller, /\[data-motion-reveal="case-continuation"\], \[data-motion-reveal="home-card"\]/, "the home cards must be observed rather than only staged at initial page entry");
   assert.match(controller, /rootMargin: "0px 0px -5% 0px", threshold: 0\.14/, "scroll reveals must begin once a visible portion reaches the viewport, not while still offscreen");
   assert.match(controller, /dataset\.motionRevealed = "true"/);
+  assert.match(controller, /const waitForCaseMediaDecode = \(scrollReveal: HTMLElement\): Promise<void> =>/, "case stories must wait for their raster before their reveal begins");
+  assert.match(controller, /image\.addEventListener\("load", settle, \{ once: true \}\)/, "a not-yet-loaded raster must settle the reveal after loading");
+  assert.match(controller, /image\.addEventListener\("error", settle, \{ once: true \}\)/, "a failed raster must never leave its story permanently hidden");
+  assert.match(controller, /void waitForCaseMediaDecode\(scrollReveal\)\.then\(\(\) => \{[\s\S]*?if \(unmounted \|\| !scrollReveal\.isConnected\) return;/, "an obsolete case decode must not reveal content after navigation");
   assert.match(styles, /\[data-motion-reveal="case-continuation"\]\[data-motion-revealed="true"\]/);
   assert.match(styles, /\[data-motion-reveal="home-card"\]\[data-motion-revealed="true"\]/);
   assert.doesNotMatch(hiddenContinuation, /clip-path:/, "the observer target cannot be clipped out of its own viewport");
